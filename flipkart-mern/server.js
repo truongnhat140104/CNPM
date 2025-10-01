@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 const dotenv = require("dotenv");
 dotenv.config();
+=======
+>>>>>>> 27c51d11ddcbbc871779b003cea847c57ea43cc8
 const path = require('path');
 const express = require('express');
 const cloudinary = require('cloudinary');
