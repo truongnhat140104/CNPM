@@ -9,9 +9,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY front-end/. .
+COPY . .
 
 RUN npm run build
+
 
 # Bước 2: Chạy bằng nginx
 FROM nginx:alpine
