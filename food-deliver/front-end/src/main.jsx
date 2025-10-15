@@ -1,14 +1,15 @@
 import React from 'react'
-import reactDom from 'react-dom/client'
-import './index.css'
+import ReactDom from 'react-dom/client'
 import App from './App.jsx'
-import { BrowserRouter } from 'react-router-dom'
+import './index.css'
+import { BrowserRouter} from 'react-router-dom'
 import StoreContextProvider from './context/StoreContext.jsx'
 
-reactDom.createRoot(document.getElementById('root')).render(
+ReactDom.createRoot(document.getElementById('root')).render(
+
   <BrowserRouter>
-    <StoreContextProvider>
-      <App />
-    </StoreContextProvider>
+  <StoreContextProvider>
+    <App />
+  </StoreContextProvider>
   </BrowserRouter>
 )
