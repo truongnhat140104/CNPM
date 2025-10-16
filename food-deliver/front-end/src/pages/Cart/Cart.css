@@ -44,13 +44,14 @@
     margin: 10px 0px;
 }
 .cart-total button{
-    border: none;
-    color: white;
-    background-color: tomato;
+    border: 1px solid rgb(47, 19, 18);
+    color: rgb(47, 19, 18);
+    background-color: rgb(252, 246, 232);
     width: max(15vw,200px);
     padding: 12px 0px;
-    border: radius 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: 600;
 }
 .cart-promocode {
     flex:1;

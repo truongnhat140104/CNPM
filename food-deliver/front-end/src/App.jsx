@@ -1,13 +1,14 @@
 import React from 'react'
-import Navbar from './components/Navbar/Navbar'
+import Navbar from './component/Navbar/Navbar.js'
 import { Route, Routes } from 'react-router-dom'
 import Cart from './pages/Cart/Cart'
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
 import Home from './pages/Home/Home'
-import Footer from './components/Footer/Footer'
-import LoginPopup from './components/LoginPopup/LoginPopup'
+import Footer from './component/Footer/Footer'
+import LoginPopup from './component/LoginPopup/LoginPopup'
 import Verify from './pages/Verify/Verify'
 import MyOrders from './pages/MyOrders/MyOrders'
+
 const App = () => {
   const [showLogin,setShowLogin] = React.useState(false);
   return (
