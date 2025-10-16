@@ -1,31 +1,52 @@
 .header{
     height: 34vw;
-    margin: 30px auto;
-    background: url('/header_img.png') no-repeat;
+    margin: 30px 150px;
+    background: url('/header_bakery.jpg') no-repeat;
     background-size: contain;
     position: relative;
+    border-radius: 40px;
+    overflow: hidden;
+    background-position: center;
+    filter: blur(0px);
+    transition: filter 0.4s ease-in-out; 
 }
-.header-contents{
+
+.header-contents {
     position: absolute;
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 1.5vw;
-    max-width: 50%;
+    text-align: left;
+    gap: 2.0vw;
+    max-width: 30%;
     bottom: 10%;
     left: 6vw;
-    animation: fadeIn 3s;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    padding: 2vw;
+    border-radius: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
 }
-.header-contents h2{
-    font-weight: 500;
-    color: white;
-    font-size: max(4.5vw, 22px);
 
+.header:hover .header-contents {
+    opacity: 1;
+    visibility: visible;
 }
-.header-contents p{
-  color : white;
-  font-size: 1vw;
+
+button:hover{
+    cursor: pointer;
 }
+
+.header-contents h2 {
+    font-weight: 600;
+    color: black;
+    font-size: max(3vw, 18px);
+    /* box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); */
+}
+
 .header-contents button{
     border: none;
     color: #747474;
@@ -35,6 +56,8 @@
     font-size: max(1vw, 13px);
     border-radius:  50px;
 }
+
+
 @media (max-width: 1050px) {
 
     .header-contents{

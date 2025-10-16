@@ -1,19 +1,22 @@
 .navbar { 
-    padding: 20px 0px;
+    padding: 15px 0px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 .navbar .logo {
-    width: 150px;
-
+    width: 200px;
+    border-radius: 20px;
+    image-rendering: optimizeQuality;
+    filter: brightness(0.95);
 }
+
 .navbar-menu {
     display: flex;
     list-style: none;
-    gap: 20px;
+    gap: 30px;
     color: #49557e;
-    font-size: 18px;
+    font-size: 22px;
 
 }
 .navbar-right {
@@ -22,19 +25,18 @@
     gap: 40px;
 }
 .navbar button {
-  background: transparent;
-  font-size: 16px;
-  color: #49557e;
+    background: transparent;
+    font-size: 19px;
+    color: #49557e;
     border: 1px solid tomato;
     padding: 10px 30px;
     border-radius: 50px;
     cursor: pointer;
-    transition: 0.3s;
 }
 .navbar button:hover {
   
-    color: white;
-
+    font-weight: 600;
+    border: 2px solid tomato;
 }
 .navbar .active {
    padding-bottom:2px ;
