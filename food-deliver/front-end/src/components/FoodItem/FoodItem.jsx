@@ -3,13 +3,14 @@ import './FoodItem.css'
 import { assets } from '../../assets/assets'
 import { StoreContext } from '../../context/StoreContext'
 
-const FoodItem = ({id, name, price, description, image}) => {
-    const {cartItems, addToCart, removeFromCart, url} = useContext(StoreContext);
+const FoodItem = ({id, name, price, description, image, setShowLogin}) => {
+    const {cartItems, addToCart, removeFromCart, url, token} = useContext(StoreContext);
 
     return (
         <div className='food-item'>
             <div className="food-item-img-container">
                 <img className='food-item-image' src={url + "/images/" + image} alt="" />
+            
             </div>
             <div className="food-item-info">
                 <div className="food-item-name-rating">
@@ -22,7 +23,15 @@ const FoodItem = ({id, name, price, description, image}) => {
                     <p className="food-item-price">${price}</p>
                     <div className="food-item-counter-wrapper">
                         {!cartItems[id]
-                            ? <img className='add' onClick={() => addToCart(id)} src={assets.add_icon_white} alt="" />
+                            ? <img className='add' onClick={() => {
+                                if (token) {
+                                    addToCart(id)
+                                }
+                                else{
+                                    alert("You need to login first")
+                                    setShowLogin(true)
+                                }}} 
+                                src={assets.add_icon_white} alt="" />
                             : <div className="food-item-counter">
                                 <img onClick={() => removeFromCart(id)} src={assets.remove_icon_red} alt="" />
                                 <p>{cartItems[id]}</p>

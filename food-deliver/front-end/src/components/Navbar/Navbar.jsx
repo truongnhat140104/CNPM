@@ -22,15 +22,25 @@ const Navbar = ({setShowLogin}) => {
      <ul className="navbar-menu">
         <Link to='/' onClick={()=>setMenu("home")} className={menu === "home" ? "active" : ""} >Home</Link>
         <a href='#explore-menu' onClick={()=>setMenu("menu")} className={menu === "menu" ? "active" : ""} >Menu</a>
-        <a href='#app-download' onClick={()=>setMenu("mobile-app")} className={menu === "mobile-app" ? "active" : ""} >Mobile-App</a>
         <a href='#footer' onClick={()=>setMenu("contact-us")} className={menu === "contact-us" ? "active" : ""} >Contact Us</a>
      </ul>
      <div className="navbar-right">
         <img src={assets.search_icon} alt="" className='search-icon' />
         <div className="navbar-search-icon">
-           <Link to='/cart'> <img src={assets.basket_icon} alt="" /></Link>
+            <img 
+              onClick={() => {
+                if (!token) {
+                  alert("You need to login first")
+                  setShowLogin(true); // Nếu chưa đăng nhập, hiện popup
+                } else {
+                  navigate('/cart'); // Nếu đã đăng nhập, chuyển đến trang giỏ hàng
+                }
+              }} 
+              src={assets.basket_icon} 
+              alt="" 
+            />
             <div className={getTotalCartAmount()===0?"":"dot"} ></div>
-        </div>
+         </div>
         {!token?<button onClick={()=>setShowLogin(true)}>Sign In</button>
         :<div className='navbar-profile'>
             <img src={assets.profile_icon} alt="" />
