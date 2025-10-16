@@ -29,17 +29,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           # Cập nhật đường dẫn cache
-          cache-dependency-path: food-delivery/back-end/package-lock.json
+          cache-dependency-path: food-deliver/back-end/package-lock.json
 
       - name: Install backend dependencies
         run: npm ci
         # Cập nhật thư mục làm việc
-        working-directory: ./food-delivery/back-end 
+        working-directory: ./food-deliver/back-end 
 
       - name: Run backend tests
         run: npm test
         # Cập nhật thư mục làm việc
-        working-directory: ./food-delivery/back-end
+        working-directory: ./food-deliver/back-end
 
   # --- JOB 2: XÂY DỰNG VÀ KIỂM THỬ FRONTEND ---
   build_frontend:
@@ -57,19 +57,19 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           # Cập nhật đường dẫn cache
-          cache-dependency-path: food-delivery/front-end/package-lock.json
+          cache-dependency-path: food-deliver/front-end/package-lock.json
       - name: Install frontend dependencies
         run: npm ci
         # Cập nhật thư mục làm việc
-        working-directory: ./food-delivery/front-end
+        working-directory: ./food-deliver/front-end
       - name: Build frontend application
         run: npm run build --if-present
         # Cập nhật thư mục làm việc
-        working-directory: ./food-delivery/front-end
+        working-directory: ./food-deliver/front-end
       - name: Run frontend tests
         run: npm test
         # Cập nhật thư mục làm việc
-        working-directory: ./food-delivery/front-end
+        working-directory: ./food-deliver/front-end
 
   # --- JOB 3: XÂY DỰNG VÀ KIỂM THỬ ADMIN PANEL ---
   build_admin:
@@ -87,17 +87,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           # Cập nhật đường dẫn cache
-          cache-dependency-path: food-delivery/admin/package-lock.json
+          cache-dependency-path: food-deliver/admin/package-lock.json
       - name: Install admin dependencies
         run: npm ci
         # Cập nhật thư mục làm việc
-        working-directory: ./food-delivery/admin
+        working-directory: ./food-deliver/admin
       - name: Build admin application
         run: npm run build --if-present
         # Cập nhật thư mục làm việc
-        working-directory: ./food-delivery/admin
+        working-directory: ./food-deliver/admin
       - name: Run admin tests
         run: npm test
         # Cập nhật thư mục làm việc
-        working-directory: ./food-delivery/admin
+        working-directory: ./food-deliver/admin
 
