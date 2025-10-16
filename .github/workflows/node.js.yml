@@ -28,15 +28,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: food-deliver/backend/package-lock.json
+          cache-dependency-path: food-deliver/back-end/package-lock.json
 
       - name: Install backend dependencies
         run: npm ci
-        working-directory: ./food-deliver/backend 
+        working-directory: ./food-deliver/back-end 
 
       - name: Run backend tests
         run: npm test
-        working-directory: ./food-deliver/backend
+        working-directory: ./food-deliver/back-end
 
   # --- JOB 2: XÂY DỰNG VÀ KIỂM THỬ FRONTEND ---
   build_frontend:
@@ -53,16 +53,16 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: food-deliver/frontend/package-lock.json
+          cache-dependency-path: food-deliver/front-end/package-lock.json
       - name: Install frontend dependencies
         run: npm ci
-        working-directory: ./food-deliver/frontend
+        working-directory: ./food-deliver/front-end
       - name: Build frontend application
         run: npm run build --if-present
-        working-directory: ./food-deliver/frontend
+        working-directory: ./food-deliver/front-end
       - name: Run frontend tests
         run: npm test
-        working-directory: ./food-deliver/frontend
+        working-directory: ./food-deliver/front-end
 
   # --- JOB 3: XÂY DỰNG VÀ KIỂM THỬ ADMIN PANEL ---
   build_admin:
