@@ -1,0 +1,102 @@
+# Tên của workflow, sẽ hiển thị trong tab "Actions" trên GitHub
+name: Node.js Monorepo CI
+
+# Cấu hình trigger: Workflow sẽ chạy khi có push hoặc pull request vào nhánh "main"
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Định nghĩa các jobs sẽ chạy
+jobs:
+  # --- JOB 1: XÂY DỰNG VÀ KIỂM THỬ BACKEND ---
+  build_backend:
+    name: Build and Test Backend
+    runs-on: ubuntu-latest
+    
+    # Chạy job trên nhiều phiên bản Node.js để đảm bảo tương thích
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    # Thiết lập thư mục làm việc mặc định cho tất cả các lệnh `run`
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      # Step 1: Lấy code từ repository về
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Cài đặt phiên bản Node.js tương ứng
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          # Bật cache để tăng tốc độ cài đặt ở những lần chạy sau
+          cache: 'npm'
+          # Chỉ định đường dẫn tới package-lock.json của backend để cache cho đúng
+          cache-dependency-path: backend/package-lock.json
+
+      # Step 3: Cài đặt các dependencies một cách an toàn
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: Chạy tests (nếu có)
+      - name: Run tests
+        run: npm test
+
+  # --- JOB 2: XÂY DỰNG VÀ KIỂM THỬ FRONTEND ---
+  build_frontend:
+    name: Build and Test Frontend
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      # Step build cho các ứng dụng React/Vite
+      - name: Build application
+        run: npm run build --if-present
+      - name: Run tests
+        run: npm test
+
+  # --- JOB 3: XÂY DỰNG VÀ KIỂM THỬ ADMIN PANEL ---
+  build_admin:
+    name: Build and Test Admin Panel
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    defaults:
+      run:
+        working-directory: ./admin
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: admin/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Build application
+        run: npm run build --if-present
+      - name: Run tests
+        run: npm test
