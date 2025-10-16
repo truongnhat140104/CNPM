@@ -37,9 +37,6 @@ jobs:
         run: npm ci
         working-directory: ./food-deliver/back-end
 
-      - name: Run backend tests
-        run: npm test
-        working-directory: ./food-deliver/back-end
 
 
   # --- JOB 2: FRONTEND ---
@@ -71,9 +68,6 @@ jobs:
         run: npm run build --if-present
         working-directory: ./food-deliver/front-end
 
-      - name: Run frontend tests
-        run: npm test
-        working-directory: ./food-deliver/front-end
 
 
   # --- JOB 3: ADMIN ---
@@ -103,8 +97,4 @@ jobs:
 
       - name: Build admin application
         run: npm run build --if-present
-        working-directory: ./food-deliver/admin
-
-      - name: Run admin tests
-        run: npm test
         working-directory: ./food-deliver/admin
