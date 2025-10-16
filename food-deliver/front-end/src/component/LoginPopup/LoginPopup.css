@@ -44,9 +44,10 @@
     border: none;
     padding: 10px;
     border-radius: 4px;
-    background-color: tomato;
+    background-color: rgb(240, 233, 220);
     font-size: 15px;
     cursor: pointer;
+    font-weight: 500;
 }
 .login-popup-condition{
     display: flex;
