@@ -1,16 +1,16 @@
-# Tên của workflow, sẽ hiển thị trong tab "Actions" trên GitHub
+# 🌐 Tên workflow hiển thị trong tab "Actions"
 name: Node.js Monorepo CI
 
-# Cấu hình trigger: Workflow sẽ chạy khi có push hoặc pull request vào nhánh "main"
+# 🚀 Kích hoạt khi có push hoặc pull request vào nhánh main
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
-# Định nghĩa các jobs sẽ chạy
+# 🧱 Các job cần chạy
 jobs:
-  # --- JOB 1: XÂY DỰNG VÀ KIỂM THỬ BACKEND ---
+  # --- JOB 1: BACKEND ---
   build_backend:
     name: Build and Test Backend
     runs-on: ubuntu-latest
@@ -28,20 +28,21 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          # Cập nhật đường dẫn cache
           cache-dependency-path: food-deliver/back-end/package-lock.json
+
+      - name: Clear npm cache
+        run: npm cache clean --force
 
       - name: Install backend dependencies
         run: npm ci
-        # Cập nhật thư mục làm việc
-        working-directory: ./food-deliver/back-end 
+        working-directory: ./food-deliver/back-end
 
       - name: Run backend tests
         run: npm test
-        # Cập nhật thư mục làm việc
         working-directory: ./food-deliver/back-end
 
-  # --- JOB 2: XÂY DỰNG VÀ KIỂM THỬ FRONTEND ---
+
+  # --- JOB 2: FRONTEND ---
   build_frontend:
     name: Build and Test Frontend
     runs-on: ubuntu-latest
@@ -51,27 +52,31 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          # Cập nhật đường dẫn cache
           cache-dependency-path: food-deliver/front-end/package-lock.json
+
+      - name: Clear npm cache
+        run: npm cache clean --force
+
       - name: Install frontend dependencies
         run: npm ci
-        # Cập nhật thư mục làm việc
-        working-directory: ./food-deliver/front-end
-      - name: Build frontend application
-        run: npm run build --if-present
-        # Cập nhật thư mục làm việc
-        working-directory: ./food-deliver/front-end
-      - name: Run frontend tests
-        run: npm test
-        # Cập nhật thư mục làm việc
         working-directory: ./food-deliver/front-end
 
-  # --- JOB 3: XÂY DỰNG VÀ KIỂM THỬ ADMIN PANEL ---
+      - name: Build frontend application
+        run: npm run build --if-present
+        working-directory: ./food-deliver/front-end
+
+      - name: Run frontend tests
+        run: npm test
+        working-directory: ./food-deliver/front-end
+
+
+  # --- JOB 3: ADMIN ---
   build_admin:
     name: Build and Test Admin Panel
     runs-on: ubuntu-latest
@@ -81,23 +86,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          # Cập nhật đường dẫn cache
           cache-dependency-path: food-deliver/admin/package-lock.json
+
+      - name: Clear npm cache
+        run: npm cache clean --force
+
       - name: Install admin dependencies
         run: npm ci
-        # Cập nhật thư mục làm việc
-        working-directory: ./food-deliver/admin
-      - name: Build admin application
-        run: npm run build --if-present
-        # Cập nhật thư mục làm việc
-        working-directory: ./food-deliver/admin
-      - name: Run admin tests
-        run: npm test
-        # Cập nhật thư mục làm việc
         working-directory: ./food-deliver/admin
 
+      - name: Build admin application
+        run: npm run build --if-present
+        working-directory: ./food-deliver/admin
+
+      - name: Run admin tests
+        run: npm test
+        working-directory: ./food-deliver/admin
