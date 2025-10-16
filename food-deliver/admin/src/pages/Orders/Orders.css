@@ -23,7 +23,9 @@
 .order-item select{
     background-color: rgb(252, 246, 232);
     border: 1px solid rgb(47, 19, 18);
-    width: max(10vw,120px);
-    padding: 30px;
+    width: max(10vw,100px);
+    padding: 10px 15px;
     outline:none;
+    border-radius: 10px;
+    font-weight: 600;
 }

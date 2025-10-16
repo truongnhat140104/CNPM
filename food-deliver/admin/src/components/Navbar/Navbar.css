@@ -6,7 +6,10 @@
 }
 
 .navbar .logo {
-    width: max(10%, 80px);
+    width: 200px;
+    border-radius: 20px;
+    image-rendering: optimizeQuality;
+    filter: brightness(0.95);
 }
 
 .navbar .profile {
