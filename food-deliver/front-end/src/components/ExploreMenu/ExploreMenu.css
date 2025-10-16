@@ -13,24 +13,25 @@
 }
 .explore-menu-list{
     display: flex;
-    justify-content: space-between;
+    justify-content:space-evenly;
     align-items: center;
-    gap: 30px;
     text-align: center;
-    margin: 20px 0px;
+    margin: 20px 0;
     overflow-x: scroll;
 
 }
 .explore-menu-list::-webkit-scrollbar{
     display: none;
 }
-.explore-menu-list-item img{
+.explore-menu-list-item img {
     width: 7.5vw;
+    height: 7.5vw;         
     min-width: 80px;
+    min-height: 80px;
     cursor: pointer;
     border-radius: 50%;
     transition: 0.2s;
-
+    object-fit: cover;
 }
 .explore-menu-list-item p{
     margin-top: 10px;
