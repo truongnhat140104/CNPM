@@ -14,7 +14,7 @@ const FoodItem = ({id, name, price, description, image}) => {
             <div className="food-item-info">
                 <div className="food-item-name-rating">
                     <p>{name}</p>
-                    {/* khu thêm rating image vào đây nếu cần */}
+                    {/* khu thêm rating image vào đây nếu cần*/}
                 </div>
                 <p className="food-item-desc">{description}</p>
                 
