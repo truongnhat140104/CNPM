@@ -15,15 +15,9 @@ jobs:
     name: Build and Test Backend
     runs-on: ubuntu-latest
     
-    # Chạy job trên nhiều phiên bản Node.js để đảm bảo tương thích
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-
-    # Thiết lập thư mục làm việc mặc định cho tất cả các lệnh `run`
-    defaults:
-      run:
-        working-directory: ./backend
 
     steps:
       # Step 1: Lấy code từ repository về
@@ -35,18 +29,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          # Bật cache để tăng tốc độ cài đặt ở những lần chạy sau
           cache: 'npm'
-          # Chỉ định đường dẫn tới package-lock.json của backend để cache cho đúng
-          cache-dependency-path: backend/package-lock.json
+          # Cập nhật đường dẫn cache
+          cache-dependency-path: food-deliver/backend/package-lock.json
 
-      # Step 3: Cài đặt các dependencies một cách an toàn
-      - name: Install dependencies
+      # Step 3: Cài đặt các dependencies
+      - name: Install backend dependencies
         run: npm ci
+        # Cập nhật thư mục làm việc
+        working-directory: ./food-deliver/backend 
 
       # Step 4: Chạy tests (nếu có)
-      - name: Run tests
+      - name: Run backend tests
         run: npm test
+        # Cập nhật thư mục làm việc
+        working-directory: ./food-deliver/backend
 
   # --- JOB 2: XÂY DỰNG VÀ KIỂM THỬ FRONTEND ---
   build_frontend:
@@ -55,9 +52,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    defaults:
-      run:
-        working-directory: ./frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -66,14 +60,20 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-      - name: Install dependencies
+          # Cập nhật đường dẫn cache
+          cache-dependency-path: food-deliver/frontend/package-lock.json
+      - name: Install frontend dependencies
         run: npm ci
-      # Step build cho các ứng dụng React/Vite
-      - name: Build application
+        # Cập nhật thư mục làm việc
+        working-directory: ./food-deliver/frontend
+      - name: Build frontend application
         run: npm run build --if-present
-      - name: Run tests
+        # Cập nhật thư mục làm việc
+        working-directory: ./food-deliver/frontend
+      - name: Run frontend tests
         run: npm test
+        # Cập nhật thư mục làm việc
+        working-directory: ./food-deliver/frontend
 
   # --- JOB 3: XÂY DỰNG VÀ KIỂM THỬ ADMIN PANEL ---
   build_admin:
@@ -82,9 +82,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    defaults:
-      run:
-        working-directory: ./admin
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -93,10 +90,18 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: admin/package-lock.json
-      - name: Install dependencies
+          # Cập nhật đường dẫn cache
+          cache-dependency-path: food-deliver/admin/package-lock.json
+      - name: Install admin dependencies
         run: npm ci
-      - name: Build application
+        # Cập nhật thư mục làm việc
+        working-directory: ./food-deliver/admin
+      - name: Build admin application
         run: npm run build --if-present
-      - name: Run tests
+        # Cập nhật thư mục làm việc
+        working-directory: ./food-deliver/admin
+      - name: Run admin tests
         run: npm test
+        # Cập nhật thư mục làm việc
+        working-directory: ./food-deliver/admin
+
