@@ -27,12 +27,12 @@
 .navbar button {
     background: transparent;
     font-size: 19px;
-    color: black;
-    border: 1px solid rgba(57, 34, 4, 0.79);
+    color: rgb(47, 19, 18);
+    border: 1px solid rgb(47, 19, 18);
     padding: 10px 30px;
     border-radius: 50px;
     cursor: pointer;
-    background-color: rgb(253, 239, 215);
+    background-color: rgb(240, 233, 220);
 }
 .navbar button:hover {
   
