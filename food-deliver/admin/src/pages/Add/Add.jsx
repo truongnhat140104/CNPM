@@ -11,7 +11,7 @@ const Add = ({url}) => {
 
     const [data,setData] = useState({
       name:"",
-      desc:"",
+      description:"",
       category:"Gato",
       price:""
     })
@@ -25,7 +25,7 @@ const Add = ({url}) => {
       const formData = new FormData();
       formData.append("image",image);
       formData.append("name",data.name);
-      formData.append("desc",data.desc);
+      formData.append("description",data.description);
       formData.append("category",data.category);
       formData.append("price",Number(data.price));
       const response = await axios.post(`${url}/api/food/add`, formData);
@@ -33,7 +33,7 @@ const Add = ({url}) => {
       if(response.data.success){
         setData({
           name:"",
-          desc:"",
+          description:"",
           category:"Gato",
           price:""
         });
@@ -63,7 +63,7 @@ const Add = ({url}) => {
 
         <div className='add-product-desc flex-col'>
           <p>Product Description</p>
-          <textarea onChange={onChangeHandler} value={data.desc} name="desc" rows="6" placeholder='Write content here'></textarea>
+          <textarea onChange={onChangeHandler} value={data.description} name="description" rows="6" placeholder='Write content here'></textarea>
         </div>
         <div className="add-category-price">
           <div className="add-category flex-col">
