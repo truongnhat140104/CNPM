@@ -48,4 +48,46 @@ const removeFood = async(req,res)=>{
     }
 }
 
-export {addFood, listFood, removeFood};
+//edit food item
+const updateFood = async(req,res)=>{
+    try{
+        const foodId = req.body.id;
+        const updateData = {
+            name: req.body.name,
+            description: req.body.description,
+            category: req.body.category,
+            price: req.body.price,
+        };
+
+        if (req.file) {
+            const food = await foodModel.findById(foodId);
+            fs.unlink(`./uploads/${food.image}`, () => {});
+
+            updateData.image = req.file.filename;
+        }
+
+        await foodModel.findByIdAndUpdate(foodId, updateData);
+        res.json({ success: true, message: "Food item updated" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Something went wrong" });
+    }
+}
+
+const getFoodById = async (req, res) => {
+    try {
+        const food = await foodModel.findById(req.params.id); 
+        
+        if (food) {
+            res.json({ success: true, data: food });
+        } else {
+            res.json({ success: false, message: "Food not found" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Something went wrong" });
+    }
+}
+
+export {addFood, listFood, removeFood, updateFood, getFoodById};
