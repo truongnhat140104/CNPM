@@ -3,11 +3,12 @@ import './List.css'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from 'react-router-dom';
 
 const List = ({url}) => {
 
   const [list, setList] = useState([])
-
+  const navigate = useNavigate();
   const fetchList = async () => {
     try {
       const response = await axios.get(`${url}/api/food/list`);
@@ -59,6 +60,12 @@ const List = ({url}) => {
               <p>{item.category}</p>
               <p>${item.price}</p>
               <p onClick={()=>removeFood(item._id)} className='cursor'>X</p>
+              <p 
+                onClick={() => navigate('/update', { state: { id: item._id } })} 
+                className='cursor'
+              >
+                Edit
+              </p>
             </div>
           )
         })}
