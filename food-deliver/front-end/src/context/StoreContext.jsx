@@ -14,19 +14,19 @@ const StoreContextProvider = (props) => {
     const deliveryCharge = 50;
 
     const addToCart = async (itemId, quantity = 1) => {
-  setCartItems((prev) => {
-    const currentQty = prev[itemId] || 0;
-    return { ...prev, [itemId]: currentQty + quantity };
-  });
+        setCartItems((prev) => {
+            const currentQty = prev[itemId] || 0;
+            return { ...prev, [itemId]: currentQty + quantity };
+        });
 
-  if (token) {
-    await axios.post(
-      url + "/api/cart/add",
-      { itemId, quantity }, // gửi cả số lượng
-      { headers: { token } }
-    );
-  }
-};
+        if (token) {
+            await axios.post(
+            url + "/api/cart/add",
+            { itemId, quantity }, // gửi cả số lượng
+            { headers: { token } }
+            );
+        }
+    };
 
     const removeFromCart = async (itemId) => {
         setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }))
@@ -44,7 +44,7 @@ const StoreContextProvider = (props) => {
                 totalAmount += itemInfo.price * cartItems[item];
             }  
             } catch (error) {
-                
+                console.log(error);
             }
             
         }
