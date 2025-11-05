@@ -34,3 +34,8 @@
   border-color: rgb(47, 19, 18);
   border-radius: 10px 0px 0px 10px;
 }
+
+.icon_size{
+  width: 25px;
+  height: 23px;
+}

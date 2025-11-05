@@ -1,0 +1,33 @@
+.list-usertable-format {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1fr 0.3fr 0.2fr; 
+  align-items: center;
+  gap: 15px;
+  padding: 20px 20px;
+  border: 1px solid #cacaca;
+  font-size: 16px;
+}
+
+.list-usertable-format.title {
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.list-usertable-format p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-usertable-format .status.deactive {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.cursor {
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  color: #e74c3c;
+}
+

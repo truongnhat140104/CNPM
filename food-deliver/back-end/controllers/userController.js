@@ -3,8 +3,6 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
 
-
-
 // login user
 const loginUser = async (req,res) => {
 
@@ -75,5 +73,45 @@ const registerUser = async (req,res) => {
 
 }
 
+const removeUser = async (req, res) => {
+    const { id } = req.body;
+    try {
+        const deletedUser = await userModel.findByIdAndDelete(id);
+        if (deletedUser) {
+            res.json({ success: true, message: "User deleted successfully" });
+        } else {
+            res.json({ success: false, message: "User not found" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error deleting user" });
+    }
+}
 
-export {loginUser,registerUser}
+const listUsers = async (req, res) => {
+    try {
+        const users = await userModel.find({});
+        res.json({ success: true, data: users });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error fetching users" });
+    }   
+}
+
+const updateUserStatus = async (req, res) => {
+    const { userId, status } = req.body;
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
+        }
+        user.status = status;
+        await user.save();
+        res.json({ success: true, message: "User status updated" });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error updating user status" });
+    }
+}
+
+export {loginUser,registerUser, removeUser, listUsers, updateUserStatus}
