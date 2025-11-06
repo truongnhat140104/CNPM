@@ -1,19 +1,19 @@
-import React, { useContext, useState } from 'react' // Bỏ useEffect
+import React, { useContext, useState } from 'react'
 import './FoodItem.css'
 import { assets } from '../../assets/assets'
 import { StoreContext } from '../../context/StoreContext'
 import { toast } from 'react-toastify';
 
-const FoodItem = ({id, name, price, description, image, setShowLogin}) => {
+const FoodItem = ({id, name, price, description, image, setShowLogin, setSelectedFoodItem, item}) => {
     const { addToCart, url, token} = useContext(StoreContext);
     const [localQuantity, setLocalQuantity] = useState(0);
 
     const handleUpdateCart = async () => {
         if (localQuantity <= 0) {
+            toast.warning("Please select at least one item to add to cart.");
             return; 
         }
 
-        // Tạo mảng tác vụ (thêm 'localQuantity' lần)
         const tasks = [];
         for (let i = 0; i < localQuantity; i++) {
             tasks.push(addToCart(id));
@@ -21,22 +21,20 @@ const FoodItem = ({id, name, price, description, image, setShowLogin}) => {
 
         try {
             await Promise.all(tasks);
-            toast.success(`Đã thêm ${localQuantity} ${name} vào giỏ hàng!`);
+            toast.success(`Added ${localQuantity} ${name} to cart!`);
         } catch (error) {
             console.error("Failed to add items to cart:", error);
-            toast.error("Thêm vào giỏ hàng thất bại!");
+            toast.error("Failed to add items to cart!");
         }
 
         // 4. Reset số lượng tạm về 0 (theo yêu cầu)
         setLocalQuantity(0);
     };
-    // --- KẾT THÚC LOGIC MỚI ---
-
 
     return (
         <div className='food-item'>
             <div className="food-item-img-container">
-                <img className='food-item-image' src={url + "/images/" + image} alt="" />
+                <img className='food-item-image' src={url + "/images/" + image} alt="" onClick={() => setSelectedFoodItem(item)}/>
             </div>
             <div className="food-item-info">
                 <div className="food-item-name-rating">
@@ -63,7 +61,18 @@ const FoodItem = ({id, name, price, description, image, setShowLogin}) => {
                             </div>
                             <button 
                                 className='add-cart-btn' 
-                                onClick={handleUpdateCart}
+                                onClick={() => {
+                                    if (token) {
+                                        handleUpdateCart();
+                                    } else {
+                                        toast.info("Please log in to add items to your cart.");
+                                        window.scrollTo({
+                                            top: 0,
+                                            behavior: 'smooth'
+                                        });
+                                        setShowLogin(true);
+                                    }
+                                }}
                             >
                                 Adding cart
                             </button>
@@ -73,6 +82,7 @@ const FoodItem = ({id, name, price, description, image, setShowLogin}) => {
             </div>
         </div>
     )
+
 }
 
 export default FoodItem

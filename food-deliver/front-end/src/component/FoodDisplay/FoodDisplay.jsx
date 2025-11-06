@@ -3,7 +3,7 @@ import './FoodDisplay.css'
 import FoodItem from '../FoodItem/FoodItem'
 import { StoreContext } from '../../context/StoreContext'
 
-const FoodDisplay = ({category, setShowLogin}) => { 
+const FoodDisplay = ({category, setShowLogin, setSelectedFoodItem}) => { 
     const {food_list} = useContext(StoreContext)
   return (
     <div className='food-display'>
@@ -19,6 +19,8 @@ const FoodDisplay = ({category, setShowLogin}) => {
                           description={item.description} 
                           image={item.image}
                           setShowLogin={setShowLogin}
+                          setSelectedFoodItem={setSelectedFoodItem}
+                          item={item}
                        /> 
               }
               

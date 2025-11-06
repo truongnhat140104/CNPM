@@ -3,6 +3,7 @@ import './Navbar.css'
 import {assets} from '../../assets/assets'
 import { Link, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
+import { toast } from 'react-toastify';
 const Navbar = ({setShowLogin}) => {
 
     const [menu,setMenu] = useState("menu");
@@ -30,7 +31,7 @@ const Navbar = ({setShowLogin}) => {
             <img 
               onClick={() => {
                 if (!token) {
-                  alert("You need to login first")
+                  toast.info("Please sign in to view your cart.");
                   setShowLogin(true); // Nếu chưa đăng nhập, hiện popup
                 } else {
                   navigate('/cart'); // Nếu đã đăng nhập, chuyển đến trang giỏ hàng
