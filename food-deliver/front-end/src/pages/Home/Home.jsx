@@ -13,8 +13,8 @@ const Home = ({setShowLogin}) => {
   return (
     <div>
       <Header/>
-      <ExploreMenu category={category} setCategory={setCategory} setSelectedFoodItem={setSelectedFoodItem} />
-      <FoodDisplay category={category} setShowLogin={setShowLogin}/>
+      <ExploreMenu category={category} setCategory={setCategory}  />
+      <FoodDisplay category={category} setShowLogin={setShowLogin} setSelectedFoodItem={setSelectedFoodItem}/>
 
       <FoodItemDetail 
         foodItem={selectedFoodItem} 

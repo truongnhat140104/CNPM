@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 const FoodItem = ({id, name, price, description, image, setShowLogin, setSelectedFoodItem, item}) => {
     const { addToCart, url, token} = useContext(StoreContext);
-    const [localQuantity, setLocalQuantity] = useState(0);
+    const [localQuantity, setLocalQuantity] = useState(1);
 
     const handleUpdateCart = async () => {
         if (localQuantity <= 0) {
@@ -27,8 +27,8 @@ const FoodItem = ({id, name, price, description, image, setShowLogin, setSelecte
             toast.error("Failed to add items to cart!");
         }
 
-        // 4. Reset số lượng tạm về 0 (theo yêu cầu)
-        setLocalQuantity(0);
+        // 4. Reset số lượng tạm về 1 (theo yêu cầu)
+        setLocalQuantity(1);
     };
 
     return (
@@ -43,7 +43,7 @@ const FoodItem = ({id, name, price, description, image, setShowLogin, setSelecte
                 <p className="food-item-desc">{description}</p>
                 
                 <div className="food-item-price-counter">
-                    <p className="food-item-price">${price}</p>
+                    <p className="food-item-price">${price.toFixed(2)}</p>
                     <div className="food-item-counter-wrapper">
                         <div className="food-item-counter-container"> 
                             <div className="food-item-counter">

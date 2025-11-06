@@ -1,0 +1,166 @@
+/* Lớp nền mờ (overlay) */
+.food-item-detail-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Nền mờ */
+    z-index: 40; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+.food-item-detail-content {
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    width: 50%;
+    max-width: 896px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.food-item-detail-close-icon {
+    position: absolute;
+    top: 16px; 
+    right: 16px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.food-item-detail-close-icon:hover {
+    opacity: 1;
+}
+
+.food-item-detail-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.food-item-detail-image-wrapper {
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.food-item-detail-image {
+    width: 80%;
+    height: auto;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.food-item-detail-info {
+    padding: 24px 24px 24px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.food-item-detail-name {
+    font-size: 30px; 
+    font-weight: 700; 
+    margin-bottom: 12px; 
+    color: #1f2937; 
+}
+
+.food-item-detail-price {
+    font-size: 24px; 
+    font-weight: 600; 
+    color: tomato; 
+    margin-bottom: 16px; 
+}
+
+.food-item-detail-desc {
+    color: #4b5563; 
+    margin-bottom: 24px; 
+    font-size: 14px; 
+    line-height: 1.6; 
+}
+
+/* Phần chọn số lượng */
+.food-item-detail-quantity-section {
+    display: flex;
+    align-items: center;
+    gap: 16px; 
+    margin-bottom: 24px; 
+}
+.food-item-detail-quantity-label {
+    font-size: 18px; 
+    font-weight: 500; 
+    color: #374151; 
+}
+
+.food-item-detail-counter {
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+    background-color: #f3f4f6; 
+    border-radius: 9999px; 
+    padding: 4px; 
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05); 
+}
+.counter-icon {
+    width: 32px; 
+    height: 32px; 
+    cursor: pointer;
+}
+.counter-quantity {
+    font-size: 20px; 
+    font-weight: 500;
+    width: 32px; 
+    text-align: center;
+}
+
+/* Nút "Adding to cart" */
+.food-item-detail-button {
+    width: 100%;
+    background-color: tomato; 
+    color: white;
+    font-size: 18px; 
+    font-weight: 600; 
+    padding: 12px 18px; 
+    border: none;
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.food-item-detail-button:hover {
+    background-color: tomato; 
+    transform: scale(1.03); 
+}
+
+/* Responsive cho 2 cột (trên desktop) */
+@media (min-width: 768px) { 
+    .food-item-detail-body {
+        flex-direction: row; /* Chuyển sang 2 cột */
+    }
+    .food-item-detail-image-wrapper {
+        width: 50%; 
+    }
+    .food-item-detail-info {
+        width: 50%; 
+    }
+}
+
+
+/* Animation */
+@keyframes fade-in {
+    from { 
+        opacity: 0; 
+        transform: scale(0.95); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+.animate-fade-in {
+    animation: fade-in 0.2s ease-out forwards;
+}
