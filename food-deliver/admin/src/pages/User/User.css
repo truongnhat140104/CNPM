@@ -31,3 +31,12 @@
   color: #e74c3c;
 }
 
+.select{
+    background-color: rgb(252, 246, 232);
+    width: 120px;
+    padding: 5px 15px;
+    outline:none;
+    border-radius: 10px;
+    font-weight: 600;
+}
+

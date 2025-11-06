@@ -4,6 +4,7 @@ import {assets} from '../../assets/assets'
 import { Link, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
 import { toast } from 'react-toastify';
+
 const Navbar = ({setShowLogin}) => {
 
     const [menu,setMenu] = useState("menu");
@@ -12,6 +13,7 @@ const Navbar = ({setShowLogin}) => {
 
     const navigate = useNavigate();
     const logout = () => {
+      toast.success("Logged out successfully!");
       localStorage.removeItem("token");
       setToken("");
       navigate("/");
@@ -32,9 +34,9 @@ const Navbar = ({setShowLogin}) => {
               onClick={() => {
                 if (!token) {
                   toast.info("Please sign in to view your cart.");
-                  setShowLogin(true); // Nếu chưa đăng nhập, hiện popup
+                  setShowLogin(true);
                 } else {
-                  navigate('/cart'); // Nếu đã đăng nhập, chuyển đến trang giỏ hàng
+                  navigate('/cart'); 
                 }
               }} 
               src={assets.basket_icon} 

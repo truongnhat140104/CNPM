@@ -3,6 +3,8 @@ import './LoginPopup.css'
 import { assets } from '../../assets/assets';
 import { StoreContext } from '../../context/StoreContext';
 import axios from "axios"
+import { toast } from 'react-toastify';
+
 const LoginPopup = ({setShowLogin}) => {
 
     const {url,setToken} = useContext(StoreContext)
@@ -21,26 +23,38 @@ const LoginPopup = ({setShowLogin}) => {
     }
 
     const onLogin = async (event) => {
-        event.preventDefault()
+        event.preventDefault();
+        
         let newUrl = url;
-        if (currState==="Login") {
-            newUrl += "/api/user/login"
-        }
-        else {
-            newUrl += "/api/user/register"
-        }
-
-        const response = await axios.post(newUrl,data);
-
-        if (response.data.success) {
-            setToken(response.data.token);
-            localStorage.setItem("token",response.data.token);
-            setShowLogin(false)
-        }
-        else {
-            alert(response.data.message)
+        if (currState === "Login") {
+            newUrl += "/api/user/login";
+        } else {
+            newUrl += "/api/user/register";
         }
 
+        try {
+            const response = await axios.post(newUrl, data);
+
+            if (response.data.success) {
+                setToken(response.data.token);
+                localStorage.setItem("token", response.data.token);
+                setShowLogin(false);
+                toast.success(currState === "Login" ? "Login Successful!" : "Registration Successful!");
+            } else {
+                toast.error(response.data.message);
+            }
+
+        } catch (error) {
+            // Handle errors (server returns status 400, 500...)
+            // This is where we catch "Invalid credentials" (400)
+            if (error.response && error.response.data && error.response.data.message) {
+                // Display error message from server
+                toast.error(error.response.data.message);
+            } else {
+                // General error
+                toast.error("An error occurred. Please try again.");
+            }
+        }
     }
 
   return (

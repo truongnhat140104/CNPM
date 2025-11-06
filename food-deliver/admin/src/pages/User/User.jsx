@@ -81,6 +81,7 @@ const User = ({ url }) => {
               <p>{user.email}</p>
               <p>
                 <select
+                  className='select'
                   value={user.status}
                   onChange={(event) => statusHandeler(event, user._id)}
           >
