@@ -133,7 +133,7 @@
 }
 .food-item-detail-button:hover {
     background-color: tomato; 
-    transform: scale(1.03); 
+    transform: scale(1.03);
 }
 
 /* Responsive cho 2 cột (trên desktop) */

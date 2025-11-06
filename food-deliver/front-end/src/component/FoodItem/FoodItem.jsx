@@ -48,7 +48,7 @@ const FoodItem = ({id, name, price, description, image, setShowLogin, setSelecte
                         <div className="food-item-counter-container"> 
                             <div className="food-item-counter">
                                 <img 
-                                    onClick={() => setLocalQuantity(prev => Math.max(0, prev - 1))} 
+                                    onClick={() => setLocalQuantity(prev => Math.max(1, prev - 1))} 
                                     src={assets.remove_icon_red} 
                                     alt="" 
                                 />
