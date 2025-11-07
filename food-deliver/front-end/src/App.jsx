@@ -9,7 +9,7 @@ import LoginPopup from './component/LoginPopup/LoginPopup'
 import Verify from './pages/Verify/Verify'
 import MyOrders from './pages/MyOrders/MyOrders'
 import { ToastContainer } from 'react-toastify'
-import FoodItemDetail from './pages/FoodItemDetail/FoodItemDetail'
+import FoodItemDetail from './component/FoodItemDetail/FoodItemDetail'
   
 const App = () => {
   const [showLogin,setShowLogin] = React.useState(false);

@@ -3,7 +3,7 @@ import './Home.css'
 import Header from '../../component/Header/Header'
 import ExploreMenu from '../../component/ExploreMenu/ExploreMenu'
 import FoodDisplay from '../../component/FoodDisplay/FoodDisplay'
-import FoodItemDetail from '../FoodItemDetail/FoodItemDetail'
+import FoodItemDetail from '../../component/FoodItemDetail/FoodItemDetail'
 
 const Home = ({setShowLogin}) => {
 
