@@ -1,49 +1,58 @@
+// userController.js (Đã cập nhật)
+
 import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
 
-// login user
-const loginUser = async (req,res) => {
+// --- SỬA HÀM NÀY ---
+// Token bây giờ sẽ chứa cả ID và ROLE
+const createToken = (id, role) => {
+    return jwt.sign({ id, role }, process.env.JWT_SECRET)
+}
 
+// login user (Đã cập nhật)
+const loginUser = async (req,res) => {
     const {email,password} = req.body;
     try {
         const user = await userModel.findOne({email});
 
         if (!user) {
             return res.json({success:false,message:"User doesn't exist"});
-
         }
+        
+        // Kiểm tra xem tài khoản có bị "deactive" không
+        if (user.status === 'deactive') {
+            return res.json({ success: false, message: "Account is deactivated." });
+        }
+
         const isMatch = await bcrypt.compare(password,user.password);
 
         if(!isMatch) {
             return res.json({success:false,message:"Wrong Password"});
         }
 
-        const token = createToken(user._id);
-        res.json({success:true,token})
+        // --- SỬA DÒNG NÀY ---
+        // Truyền cả user._id và user.role vào
+        const token = createToken(user._id, user.role); 
+        
+        // Trả về thêm role để front-end biết
+        res.json({success:true, token, role: user.role }) 
     } catch (error) {
         console.log(error);
         res.json({success:false,message:"Error"});
-        
     }
 }
 
-const createToken = (id) =>{
-    return jwt.sign({id},process.env.JWT_SECRET)
-}
-
-//register user
+//register user (Đã cập nhật)
 const registerUser = async (req,res) => {
     const {name,password,email} = req.body;
     try {
-        // checking is user already exists     
         const exists = await userModel.findOne({email})
         if (exists) {
             return res.json({success:false,message:"User already exists"})
         }
 
-        // validating email formating and strong password
         if (!validator.isEmail(email)) {
             return res.json({success:false,message:"Please enter a valid email"})
         }
@@ -52,7 +61,6 @@ const registerUser = async (req,res) => {
             return res.json({success:false,message:"please enter a strong password"})
         }
 
-        //hashing user password 
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt);
 
@@ -60,24 +68,33 @@ const registerUser = async (req,res) => {
             name:name,
             email:email,
             password:hashedPassword
+            // role sẽ tự động là 'customer' theo default trong Model
         })
 
         const user = await newUser.save()
-        const token = createToken(user._id)
-        res.json({success:true,token});
+        
+        // --- SỬA DÒNG NÀY ---
+        // Truyền cả user._id và user.role (là 'customer')
+        const token = createToken(user._id, user.role)
+        
+        // Trả về thêm role
+        res.json({success:true, token, role: user.role});
     } catch (error) {
         console.log(error);
         res.json({success:false,message:"Error"})
-        
     }
-
 }
 
+// --- CÁC HÀM ADMIN (Giữ nguyên) ---
+// (Logic của các hàm này đã đúng, chúng ta sẽ bảo vệ chúng ở Router)
+
 const removeUser = async (req, res) => {
+    // ... (Giữ nguyên code của bạn)
     const { id } = req.body;
     try {
         const deletedUser = await userModel.findByIdAndDelete(id);
         if (deletedUser) {
+            // TODO: Nếu user này là 'owner', bạn cũng nên xóa 'restaurant' của họ
             res.json({ success: true, message: "User deleted successfully" });
         } else {
             res.json({ success: false, message: "User not found" });
@@ -89,6 +106,7 @@ const removeUser = async (req, res) => {
 }
 
 const listUsers = async (req, res) => {
+    // ... (Giữ nguyên code của bạn)
     try {
         const users = await userModel.find({});
         res.json({ success: true, data: users });
@@ -99,6 +117,7 @@ const listUsers = async (req, res) => {
 }
 
 const updateUserStatus = async (req, res) => {
+    // ... (Giữ nguyên code của bạn)
     const { userId, status } = req.body;
     try {
         const user = await userModel.findById(userId);

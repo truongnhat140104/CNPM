@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 
 const foodSchema = new mongoose.Schema({
+    restaurant_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'restaurant', // Tham chiếu đến restaurantModel
+        required: true
+    },
+    // -------------------
+    
     name: {type: String, require: true},
     image: {type: String, require: true},
     description: {type: String, require: true},
