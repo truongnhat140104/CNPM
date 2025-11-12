@@ -72,7 +72,6 @@ const User = ({ url }) => {
 
   return (
     <div className='list add flex-col'>
-      <p>Customer List</p>
       <div className="list-table">
         <div className="list-usertable-format title">
           <b>Name</b>
@@ -81,18 +80,23 @@ const User = ({ url }) => {
           <b>Status</b>
           <b>Action</b>
         </div>
+      </div>
+
+      <br />
+      <p>Customer List</p>
+      <div className="list-table">
         {users.length > 0 ? (
-          users.map((user, index) => (
+          users.filter(user => user.role === 'customer').map((user, index) => (
             <div key={index} className="list-usertable-format">
               <p>{user.name}</p>
               <p>{user.email}</p>
-              <p>{user.role}</p>
+              <p>{user.role === 'owner'}</p>
               <p>
                 <select
                   className='select'
                   value={user.status}
                   onChange={(event) => statusHandeler(event, user._id)}
-          >
+              >
                   <option value="active">Active</option>
                   <option value="deactive">Deactive</option>
                 </select>
@@ -101,24 +105,25 @@ const User = ({ url }) => {
             </div>
           ))
         ) : (
-          <p>No users found.</p>
+          <p>No customer found.</p>
         )}
       </div>
       
+      <br/>
       <p>Owner List</p>
       <div className="list-table">
         {users.length > 0 ? (
-          users.map((user, index) => (
+          users.filter(user => user.role === 'owner').map((user, index) => (
             <div key={index} className="list-usertable-format">
               <p>{user.name}</p>
               <p>{user.email}</p>
-              <p>{user.role}</p>
+              <p>{user.role === 'owner'}</p>
               <p>
                 <select
                   className='select'
                   value={user.status}
                   onChange={(event) => statusHandeler(event, user._id)}
-          >
+                >
                   <option value="active">Active</option>
                   <option value="deactive">Deactive</option>
                 </select>

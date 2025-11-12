@@ -31,7 +31,6 @@ const loginUser = async (req,res) => {
             return res.json({success:false,message:"Wrong Password"});
         }
 
-        // --- SỬA DÒNG NÀY ---
         // Truyền cả user._id và user.role vào
         const token = createToken(user._id, user.role); 
         
@@ -71,6 +70,7 @@ const registerUser = async (req,res) => {
 
         const user = await newUser.save()
         
+        // Truyền cả user._id và user.role (là 'customer')
         const token = createToken(user._id, user.role)
         
         // Trả về thêm role
@@ -87,6 +87,7 @@ const removeUser = async (req, res) => {
     try {
         const deletedUser = await userModel.findByIdAndDelete(id);
         if (deletedUser) {
+            // TODO: Nếu user này là 'owner', bạn cũng nên xóa 'restaurant' của họ
             res.json({ success: true, message: "User deleted successfully" });
         } else {
             res.json({ success: false, message: "User not found" });
@@ -98,8 +99,9 @@ const removeUser = async (req, res) => {
 }
 
 const listUsers = async (req, res) => {
+    const role = req.query.role;
     try {
-        const users = await userModel.find({});
+        const users = await userModel.find({role : { $in: ['customer', 'owner'] } }); // Lọc chỉ lấy customer và owner
         res.json({ success: true, data: users });
     } catch (error) {
         console.log(error);

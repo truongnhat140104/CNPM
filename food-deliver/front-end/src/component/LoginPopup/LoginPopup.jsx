@@ -4,12 +4,12 @@ import { assets } from '../../assets/assets';
 import { StoreContext } from '../../context/StoreContext';
 import axios from "axios"
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
 const LoginPopup = ({setShowLogin}) => {
 
     const {url,setToken, setRole} = useContext(StoreContext)
-
+    const urlAdmin = "http://localhost:5174";
+    const urlOwner = "http://localhost:5175";
 
     const [currState,setCurrState] = useState('Login');
     const [data,setData] = useState({
@@ -48,9 +48,9 @@ const LoginPopup = ({setShowLogin}) => {
 
                 // Dựa vào role để chuyển trang
                 if (role === 'admin') {
-                    navigate("/admin"); 
+                    window.location.href = `${urlAdmin}/?token=${token}&role=${role}`;
                 } else if (role === 'owner') {
-                    navigate("/owner/");
+                    window.location.href = `${urlOwner}/?token=${token}&role=${role}`;
                 }
                 // (Nếu là customer thì không cần làm gì, popup tự đóng)
 

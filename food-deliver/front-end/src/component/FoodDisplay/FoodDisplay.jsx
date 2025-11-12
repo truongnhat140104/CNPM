@@ -8,7 +8,7 @@ const FoodDisplay = ({category, setShowLogin, setSelectedFoodItem}) => {
   return (
     <div className='food-display'>
         <div className="food-display-list">
-            {food_list.map((item,index)=>{
+            {/* {food_list.map((item,index)=>{
               if (category==='All'|| item.category===category) {
                 
                 return <FoodItem 
@@ -24,7 +24,7 @@ const FoodDisplay = ({category, setShowLogin, setSelectedFoodItem}) => {
                        /> 
               }
               
-            })}
+            })} */}
         </div>
     </div>
   )
