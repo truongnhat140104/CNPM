@@ -18,7 +18,7 @@ const getRestaurantByOwner = async (ownerId) => {
     return restaurant;
 }
 
-// add food item (Bảo mật: Chỉ chủ nhà hàng mới được thêm)
+// add food item (Chỉ chủ nhà hàng mới được thêm)
 const addFood = async(req,res)=>{
     try{
         // 1. Tìm nhà hàng của người đang đăng nhập
@@ -32,7 +32,7 @@ const addFood = async(req,res)=>{
             category: req.body.category,
             price: req.body.price,
             image: image_filename,
-            restaurant_id: restaurant._id // <-- BẮT BUỘC: Gán món ăn cho nhà hàng
+            restaurant_id: restaurant._id
         });
     
         await food.save();
@@ -44,7 +44,6 @@ const addFood = async(req,res)=>{
     }
 }
 
-// all food list (Sửa: Chỉ list food của CHỦ NHÀ HÀNG đang đăng nhập)
 const listFood = async(req,res)=>{
     try{
         // 1. Tìm nhà hàng của người đang đăng nhập
@@ -59,7 +58,6 @@ const listFood = async(req,res)=>{
     }
 }
 
-// remove food item (Bảo mật: Chỉ chủ nhà hàng mới được xóa)
 const removeFood = async(req,res)=>{
     try{
         // 1. Tìm nhà hàng của người đang đăng nhập
@@ -89,7 +87,6 @@ const removeFood = async(req,res)=>{
     }
 }
 
-// edit food item (Bảo mật: Chỉ chủ nhà hàng mới được sửa)
 const updateFood = async(req,res)=>{
     try{
         // 1. Tìm nhà hàng của người đang đăng nhập
@@ -133,7 +130,6 @@ const updateFood = async(req,res)=>{
     }
 }
 
-// getFoodById (Hàm này có thể giữ nguyên, công khai cho khách hàng)
 const getFoodById = async (req, res) => {
     try {
         const food = await foodModel.findById(req.params.id); 
@@ -148,8 +144,6 @@ const getFoodById = async (req, res) => {
         res.json({ success: false, message: "Something went wrong" });
     }
 }
-
-// --- HÀM MỚI (Cần thiết cho Khách hàng) ---
 
 // list food (Cho khách hàng xem menu của 1 nhà hàng cụ thể)
 const listFoodByRestaurant = async (req, res) => {

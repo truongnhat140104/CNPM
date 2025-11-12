@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
 
-// --- SỬA HÀM NÀY ---
 // Token bây giờ sẽ chứa cả ID và ROLE
 const createToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET)
@@ -68,13 +67,10 @@ const registerUser = async (req,res) => {
             name:name,
             email:email,
             password:hashedPassword
-            // role sẽ tự động là 'customer' theo default trong Model
         })
 
         const user = await newUser.save()
         
-        // --- SỬA DÒNG NÀY ---
-        // Truyền cả user._id và user.role (là 'customer')
         const token = createToken(user._id, user.role)
         
         // Trả về thêm role
@@ -85,16 +81,12 @@ const registerUser = async (req,res) => {
     }
 }
 
-// --- CÁC HÀM ADMIN (Giữ nguyên) ---
-// (Logic của các hàm này đã đúng, chúng ta sẽ bảo vệ chúng ở Router)
 
 const removeUser = async (req, res) => {
-    // ... (Giữ nguyên code của bạn)
     const { id } = req.body;
     try {
         const deletedUser = await userModel.findByIdAndDelete(id);
         if (deletedUser) {
-            // TODO: Nếu user này là 'owner', bạn cũng nên xóa 'restaurant' của họ
             res.json({ success: true, message: "User deleted successfully" });
         } else {
             res.json({ success: false, message: "User not found" });
@@ -106,7 +98,6 @@ const removeUser = async (req, res) => {
 }
 
 const listUsers = async (req, res) => {
-    // ... (Giữ nguyên code của bạn)
     try {
         const users = await userModel.find({});
         res.json({ success: true, data: users });
