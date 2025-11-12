@@ -4,10 +4,12 @@ import { assets } from '../../assets/assets';
 import { StoreContext } from '../../context/StoreContext';
 import axios from "axios"
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPopup = ({setShowLogin}) => {
 
-    const {url,setToken} = useContext(StoreContext)
+    const {url,setToken, setRole} = useContext(StoreContext)
+
 
     const [currState,setCurrState] = useState('Login');
     const [data,setData] = useState({
@@ -36,22 +38,30 @@ const LoginPopup = ({setShowLogin}) => {
             const response = await axios.post(newUrl, data);
 
             if (response.data.success) {
-                setToken(response.data.token);
-                localStorage.setItem("token", response.data.token);
+                const { token, role } = response.data;
+                setToken(token);
+                setRole(role);
+                localStorage.setItem("token", token);
+                localStorage.setItem("role", role);
                 setShowLogin(false);
                 toast.success(currState === "Login" ? "Login Successful!" : "Registration Successful!");
+
+                // Dựa vào role để chuyển trang
+                if (role === 'admin') {
+                    navigate("/admin"); 
+                } else if (role === 'owner') {
+                    navigate("/owner/");
+                }
+                // (Nếu là customer thì không cần làm gì, popup tự đóng)
+
             } else {
                 toast.error(response.data.message);
             }
 
         } catch (error) {
-            // Handle errors (server returns status 400, 500...)
-            // This is where we catch "Invalid credentials" (400)
             if (error.response && error.response.data && error.response.data.message) {
-                // Display error message from server
                 toast.error(error.response.data.message);
             } else {
-                // General error
                 toast.error("An error occurred. Please try again.");
             }
         }

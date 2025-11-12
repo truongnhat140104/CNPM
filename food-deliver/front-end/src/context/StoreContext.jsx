@@ -11,6 +11,7 @@ const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
     const [token, setToken] = useState("")
     const [showLogin, setShowLogin] = useState(false);
+    const [role, setRole] = useState(localStorage.getItem("role") || null);
     const currency = "vnđ";
     const deliveryCharge = 50;
 
@@ -90,6 +91,8 @@ const StoreContextProvider = (props) => {
         getTotalCartAmount,
         token,
         setToken,
+        role,
+        setRole,
         loadCartData,
         setCartItems,
         currency,

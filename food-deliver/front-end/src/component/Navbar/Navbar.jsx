@@ -29,6 +29,7 @@ const Navbar = ({setShowLogin}) => {
      </ul>
      <div className="navbar-right">
         {/* <img src={assets.search_icon} alt="" className='search-icon' /> */}
+        
         <div className="navbar-search-icon">
             <img 
               onClick={() => {
