@@ -18,10 +18,6 @@ const adminMiddleware = async (req, res, next) => {
         if (!user || user.role !== 'admin') {
             return res.json({ success: false, message: 'Authorization Failed: Admin access required.' });
         }
-
-        // 4. Gắn userId vào request để controller sử dụng (giống authMiddleware của bạn)
-        if (!req.body) req.body = {};
-        req.body.userId = token_decode.id; // Gắn ID của admin
         
         next();
 
