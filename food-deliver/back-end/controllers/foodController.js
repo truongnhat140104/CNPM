@@ -5,7 +5,7 @@ import userModel from "../models/userModel.js";
 import fs from 'fs';
 import path from 'path';
 
-// --- Hàm hỗ trợ: Lấy nhà hàng của chủ sở hữu ---
+// Lấy nhà hàng của chủ sở hữu ---
 const getRestaurantByOwner = async (ownerId) => {
     const user = await userModel.findById(ownerId);
     if (user.role !== 'owner') {

@@ -49,8 +49,10 @@ const LoginPopup = ({setShowLogin}) => {
                 // Dựa vào role để chuyển trang
                 if (role === 'admin') {
                     window.location.href = `${urlAdmin}/?token=${token}&role=${role}`;
+                    // stop;
                 } else if (role === 'owner') {
                     window.location.href = `${urlOwner}/?token=${token}&role=${role}`;
+                    // stop;
                 }
                 // (Nếu là customer thì không cần làm gì, popup tự đóng)
 

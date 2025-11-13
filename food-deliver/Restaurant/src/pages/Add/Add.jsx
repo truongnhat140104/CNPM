@@ -1,0 +1,103 @@
+import React, { useEffect, useState } from 'react'
+import './Add.css'
+import { assets } from '../../assets/assets'
+import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
+const Add = ({url}) => {
+
+    const [image,setImage] = useState(false);
+    const [data,setData] = useState({
+      name:"",
+      description:"",
+      category:"Gato",
+      price:""
+    })
+
+    // Lấy token từ localStorage ---
+    const token = localStorage.getItem("token");
+
+    const onChangeHandler = (e)=>{
+      setData({...data,[e.target.name]:e.target.value})
+    }
+
+    const onSubmitHandler = async (e) =>{
+      e.preventDefault();
+
+      if (!token) {
+        toast.error("you must be logged in to add food.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image",image);
+      formData.append("name",data.name);
+      formData.append("description",data.description);
+      formData.append("category",data.category);
+      formData.append("price",Number(data.price));
+      
+      const response = await axios.post(
+        `${url}/api/food/add`, 
+        formData, 
+        { headers: { token } }
+      );
+
+      if(response.data.success){
+        setData({
+          name:"",
+          description:"",
+          category:"Gato",
+          price:""
+        });
+        setImage(false);
+        toast.success(response.data.message);
+      }
+      else{
+        toast.error(response.data.message);
+      }
+    }
+ 
+  return (
+    <div className='add'>
+      <form action="" className='flex-col' onSubmit={onSubmitHandler}>
+        <div className="add-img-upload flex-col">
+          <p>Upload img</p>
+          <label htmlFor="image">
+            <img src={image?URL.createObjectURL(image):assets.upload_area} alt="" />
+          </label>
+          <input onChange={(e)=>setImage(e.target.files[0])} type="file" name="" id="image" hidden required />
+        </div> 
+
+        <div className='add-product-name flex-col'>
+          <p>Product Name</p>
+          <input onChange={onChangeHandler} value={data.name} type="text" name='name' placeholder='Type here' />
+        </div>
+
+        <div className='add-product-desc flex-col'>
+          <p>Product Description</p>
+          <textarea onChange={onChangeHandler} value={data.description} name="description" rows="6" placeholder='Write content here'></textarea>
+        </div>
+        <div className="add-category-price">
+          <div className="add-category flex-col">
+            <p>Product Category</p>
+            <select onChange={onChangeHandler} value={data.category} name='category'>
+              <option value="Gato">Gato</option>
+              <option value="Cupcake">Cupcake</option>
+              <option value="Tart">Tart</option>
+              <option value="Donut">Donut</option>
+            </select>
+          </div>
+          <div className="add-price flex-col">
+            <p>Product Type</p>
+            <input onChange={onChangeHandler} value={data.price} type="Number" name="price" placeholder='$20' />
+          </div>
+        </div>
+        <button type="submit" className='add-btn'>ADD</button>
+
+      </form>
+    </div>
+  )
+}
+
+export default Add

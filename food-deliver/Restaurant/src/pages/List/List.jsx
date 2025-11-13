@@ -9,9 +9,16 @@ const List = ({url}) => {
 
   const [list, setList] = useState([])
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+
   const fetchList = async () => {
+    if (!token) {
+      toast.error("Cannot fetch food list. No token found.");
+      return;
+    }
     try {
-      const response = await axios.get(`${url}/api/food/list`);
+      const response = await axios.get(`${url}/api/food/list`, { headers: { token } });
       if (response.data.success) {
         setList(response.data.data);
       } else {
@@ -29,8 +36,19 @@ const List = ({url}) => {
   }, [])
 
   const removeFood = async (id) => {
+    if (!token) {
+      toast.error("No token found. Please log in again.");
+      return;
+    }
+    
     console.log(id);
-    const response = await axios.post(`${url}/api/food/remove/`,{ id:id });
+    
+    const response = await axios.post(
+      `${url}/api/food/remove/`,
+      { id: id },
+      { headers: { token } }
+    );
+    
     await fetchList();
     if(response.data.success){
       toast.success("Food removed successfully");
