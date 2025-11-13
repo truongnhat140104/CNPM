@@ -1,8 +1,8 @@
 import foodModel from "../models/foodModel.js";
 import resModel from "../models/resModel.js";
+import userModel from "../models/userModel.js";
 
-// get all restaurants
-export const getAllRestaurants = async (req, res) => {
+const getAllRestaurants = async (req, res) => {
     try {
         const restaurants = await resModel.find({});
         res.json({ success: true, data: restaurants });
@@ -12,8 +12,7 @@ export const getAllRestaurants = async (req, res) => {
     }
 };
 
-// get restaurant by id
-export const getRestaurantById = async (req, res) => {
+const getRestaurantById = async (req, res) => {
     const { id } = req.params;
     try {
         const restaurant = await resModel.findById(id);
@@ -27,11 +26,10 @@ export const getRestaurantById = async (req, res) => {
     }
 };
 
-// get foods by restaurant id
-export const getFoodsByRestaurantId = async (req, res) => {
+const getFoodsByRestaurantId = async (req, res) => {
     const { id } = req.params;
     try {
-        const foods = await foodModel.find({ restaurantId: id });
+        const foods = await foodModel.find({ restaurant_id: id });
         res.json({ success: true, data: foods });
     } catch (error) {
         console.log(error);
@@ -39,51 +37,86 @@ export const getFoodsByRestaurantId = async (req, res) => {
     }
 };
 
-// create new restaurant
-export const createRestaurant = async (req, res) => {
-    const { name, address, phone } = req.body;
+const createRestaurant = async (req, res) => {
+    const ownerId = req.body.userId;
+    const { name, address, phone, image, description } = req.body;
+
     try {
-        const newRestaurant = new resModel({ name, address, phone });
+        const user = await userModel.findById(ownerId);
+        if (!user || user.role !== 'owner') {
+            return res.json({ success: false, message: "Authorization Failed: Only owners can create." });
+        }
+
+        const existingRestaurant = await resModel.findOne({ owner: ownerId });
+        if (existingRestaurant) {
+            return res.json({ success: false, message: "You already own a restaurant." });
+        }
+
+        const newRestaurant = new resModel({
+            name,
+            address,
+            phone,
+            image: image || "",
+            description: description || "",
+            owner: ownerId
+        });
+        
         await newRestaurant.save();
-        res.json({ success: true, message: "Restaurant created successfully" });
+        res.json({ success: true, message: "Restaurant created successfully", data: newRestaurant });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: "Error creating restaurant" });
     }
 };
 
-// update restaurant
-export const updateRestaurant = async (req, res) => {
-    const { id } = req.params;
-    const { name, address, phone } = req.body;
+const updateRestaurant = async (req, res) => {
+    const restaurantId = req.params.id;
+    const ownerId = req.body.userId;
+    const updateData = req.body;
+
     try {
-        const restaurant = await resModel.findById(id);
+        const restaurant = await resModel.findById(restaurantId);
         if (!restaurant) {
             return res.json({ success: false, message: "Restaurant not found" });
         }
-        restaurant.name = name || restaurant.name;
-        restaurant.address = address || restaurant.address;
-        restaurant.phone = phone || restaurant.phone;
-        await restaurant.save();
-        res.json({ success: true, message: "Restaurant updated successfully" });
+
+        if (restaurant.owner.toString() !== ownerId) {
+            return res.json({ success: false, message: "Authorization Failed: This is not your restaurant." });
+        }
+        
+        delete updateData.owner;
+        delete updateData.userId;
+
+        const updatedRestaurant = await resModel.findByIdAndUpdate(restaurantId, updateData, { new: true });
+        res.json({ success: true, message: "Restaurant updated successfully", data: updatedRestaurant });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: "Error updating restaurant" });
     }
 };
 
-// delete restaurant
-export const deleteRestaurant = async (req, res) => {
-    const { id } = req.params;
+const deleteRestaurant = async (req, res) => {
+    const restaurantId = req.params.id;
+    const ownerId = req.body.userId;
+
     try {
-        const restaurant = await resModel.findByIdAndDelete(id);
+        const restaurant = await resModel.findById(restaurantId);
         if (!restaurant) {
             return res.json({ success: false, message: "Restaurant not found" });
         }
+
+        if (restaurant.owner.toString() !== ownerId) {
+            return res.json({ success: false, message: "Authorization Failed: This is not your restaurant." });
+        }
+
+        await resModel.findByIdAndDelete(restaurantId);
+        await foodModel.deleteMany({ restaurant_id: restaurantId });
+
         res.json({ success: true, message: "Restaurant deleted successfully" });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: "Error deleting restaurant" });
     }
 };
-export {getAllRestaurants,getRestaurantById,getFoodsByRestaurantId,createRestaurant,updateRestaurant,deleteRestaurant}
+
+export { getAllRestaurants, getRestaurantById, getFoodsByRestaurantId, createRestaurant, updateRestaurant, deleteRestaurant };
