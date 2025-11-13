@@ -101,7 +101,7 @@ const removeUser = async (req, res) => {
 const listUsers = async (req, res) => {
     const role = req.query.role;
     try {
-        const users = await userModel.find({role : { $in: ['customer', 'owner'] } }); // Lọc chỉ lấy customer và owner
+        const users = await userModel.find({role : { $in: ['customer'] } }); // Lọc chỉ lấy customer
         res.json({ success: true, data: users });
     } catch (error) {
         console.log(error);

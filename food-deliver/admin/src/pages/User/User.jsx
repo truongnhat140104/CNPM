@@ -73,6 +73,7 @@ const User = ({ url }) => {
   return (
     <div className='list add flex-col'>
       <div className="list-table">
+        <p>Customer List</p>
         <div className="list-usertable-format title">
           <b>Name</b>
           <b>Email</b>
@@ -81,9 +82,6 @@ const User = ({ url }) => {
           <b>Action</b>
         </div>
       </div>
-
-      <br />
-      <p>Customer List</p>
       <div className="list-table">
         {users.length > 0 ? (
           users.filter(user => user.role === 'customer').map((user, index) => (
@@ -107,34 +105,7 @@ const User = ({ url }) => {
         ) : (
           <p>No customer found.</p>
         )}
-      </div>
-      
-      <br/>
-      <p>Owner List</p>
-      <div className="list-table">
-        {users.length > 0 ? (
-          users.filter(user => user.role === 'owner').map((user, index) => (
-            <div key={index} className="list-usertable-format">
-              <p>{user.name}</p>
-              <p>{user.email}</p>
-              <p>{user.role === 'owner'}</p>
-              <p>
-                <select
-                  className='select'
-                  value={user.status}
-                  onChange={(event) => statusHandeler(event, user._id)}
-                >
-                  <option value="active">Active</option>
-                  <option value="deactive">Deactive</option>
-                </select>
-              </p>  
-              <p onClick={() => removeUser(user._id)} className='cursor'>X</p>
-            </div>
-          ))
-        ) : (
-          <p>No customer found.</p>
-        )}
-      </div>
+      </div>      
     </div>
   );
 };
