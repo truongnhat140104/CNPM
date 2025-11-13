@@ -2,10 +2,6 @@ import React, { useEffect } from 'react'
 import Navbar from './components/Navbar/Navbar'
 import Sidebar from './components/Sidebar/Sidebar'
 import { Routes, Route, useNavigate  } from 'react-router-dom'
-import List from './pages/List/List'
-import Add from './pages/Add/Add'
-import Orders from './pages/Orders/Orders'
-import Update from './pages/Update/Update'
 import User from './pages/User/User'
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -46,10 +42,6 @@ const App = () => {
         <Sidebar />
         <Routes>
           <Route path="/" element={<TokenHandler />} />
-          <Route path="/add" element={<Add url={url}/>} />
-          <Route path="/list" element={<List url={url}/>} />
-          <Route path="/orders" element={<Orders url={url}/>} />
-          <Route path="/update" element={<Update url={url}/>} />
           <Route path="/user" element={<User url={url}/>} />
         </Routes>
       </div>
