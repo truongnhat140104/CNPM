@@ -97,16 +97,11 @@ const updateRestaurant = async (req, res) => {
 
 const deleteRestaurant = async (req, res) => {
     const restaurantId = req.params.id;
-    const ownerId = req.body.userId;
 
     try {
         const restaurant = await resModel.findById(restaurantId);
         if (!restaurant) {
             return res.json({ success: false, message: "Restaurant not found" });
-        }
-
-        if (restaurant.owner.toString() !== ownerId) {
-            return res.json({ success: false, message: "Authorization Failed: This is not your restaurant." });
         }
 
         await resModel.findByIdAndDelete(restaurantId);

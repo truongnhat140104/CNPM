@@ -1,6 +1,7 @@
 import { } from '../controllers/resController.js';
 import express from 'express';
-import authMiddleware from '../middleware/auth.js';
+import authMiddleware from '../Middleware/authMiddleware.js';
+import adminMiddleware from '../Middleware/adminMiddleware.js';
 import { 
     getAllRestaurants, 
     getRestaurantById, 
@@ -17,6 +18,6 @@ resRouter.get('/:id', getRestaurantById);
 resRouter.get('/:id/foods', getFoodsByRestaurantId);
 resRouter.post('/create', authMiddleware, createRestaurant); // Bảo vệ route này
 resRouter.put('/update/:id', authMiddleware, updateRestaurant); // Bảo vệ route này
-resRouter.delete('/delete/:id', authMiddleware, deleteRestaurant); // Bảo vệ route này
+resRouter.delete('/delete/:id',adminMiddleware, deleteRestaurant); // Bảo vệ route này
 
 export default resRouter;
