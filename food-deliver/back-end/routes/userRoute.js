@@ -1,16 +1,18 @@
 import express from 'express';
 import { loginUser, registerUser, removeUser, listUsers, updateUserStatus} from '../controllers/userController.js';
-import adminMiddleware from '../middleware/adminMiddleware.js';
+import checkAuth from '../middleware/checkAuth.js';
+import checkRole from '../middleware/checkRole.js';
 
 const userRouter = express.Router();
 
 userRouter.post('/login', loginUser);
 userRouter.post('/register', registerUser); 
 
-userRouter.post('/remove', adminMiddleware, removeUser); 
-userRouter.get('/list', adminMiddleware, listUsers);
-userRouter.post('/update-status', adminMiddleware, updateUserStatus);
+// Middleware chỉ cho phép admin truy cập
+userRouter.post('/remove', checkAuth, checkRole(['admin']), removeUser); 
+userRouter.get('/list', checkAuth, checkRole(['admin']), listUsers);
+userRouter.post('/update-status', checkAuth, checkRole(['admin']), updateUserStatus);
 
-// userRouter.post('/create-owner', adminMiddleware, createOwnerFunction);
+// userRouter.post('/create-owner', checkAuth, checkRole(['admin']), createOwnerFunction);
 
 export default userRouter;

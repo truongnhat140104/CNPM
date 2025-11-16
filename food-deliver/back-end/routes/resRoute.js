@@ -1,11 +1,10 @@
 import express from 'express';
-import resAuthMiddleware from '../middleware/resAuthMiddleware.js'; 
+import checkAuth from '../middleware/checkAuth.js';
+import checkRole from '../middleware/checkRole.js'; 
 import { 
     getAllRestaurants, 
     getRestaurantById, 
     getFoodsByRestaurantId, 
-    registerRestaurant,
-    loginRestaurant,
     updateRestaurant,
     deleteRestaurant
 } from '../controllers/resController.js';
@@ -16,10 +15,7 @@ resRouter.get('/', getAllRestaurants);
 resRouter.get('/:id', getRestaurantById);
 resRouter.get('/:id/foods', getFoodsByRestaurantId);
 
-resRouter.post('/register', registerRestaurant);
-resRouter.post('/login', loginRestaurant);
-
-resRouter.put('/update', resAuthMiddleware, updateRestaurant); 
-resRouter.delete('/delete', resAuthMiddleware, deleteRestaurant); 
+resRouter.put('/:id', checkAuth, checkRole(['restaurant']), updateRestaurant);
+resRouter.delete('/:id', checkAuth, checkRole(['restaurant']), deleteRestaurant);
 
 export default resRouter;

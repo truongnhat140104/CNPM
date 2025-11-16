@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     email:{type:String,required:true,unique:true},
     password:{type:String,required:true},
     status:{type:String,default:"active"},
-    role: {type: String, enum: ['customer', 'owner', 'admin'], default: 'customer'},
+    role: {type: String, enum: ['user', 'restaurant', 'admin'], default: 'user'},
     
     cartData:{
         type: {

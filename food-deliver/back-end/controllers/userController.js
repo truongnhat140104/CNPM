@@ -42,42 +42,48 @@ const loginUser = async (req,res) => {
     }
 }
 
-//register user (Đã cập nhật)
-const registerUser = async (req,res) => {
-    const {name,password,email} = req.body;
+const registerUser = async (req, res) => {
+    const { name, password, email, role } = req.body;
+    
     try {
-        const exists = await userModel.findOne({email})
+        const exists = await userModel.findOne({ email });
         if (exists) {
-            return res.json({success:false,message:"User already exists"})
+            return res.json({ success: false, message: "User already exists" });
         }
 
         if (!validator.isEmail(email)) {
-            return res.json({success:false,message:"Please enter a valid email"})
+            return res.json({ success: false, message: "Please enter a valid email" });
         }
 
-        if (password.length<8) {
-            return res.json({success:false,message:"please enter a strong password"})
+        if (password.length < 8) {
+            return res.json({ success: false, message: "Please enter a strong password" });
         }
 
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password,salt);
+        const userRole = role || 'user';
+
+        if (userRole === 'admin') {
+            return res.json({ success: false, message: "Cannot register as admin" });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new userModel({
-            name:name,
-            email:email,
-            password:hashedPassword
-        })
+            name: name,
+            email: email,
+            password: hashedPassword,
+            role: userRole
+        });
 
-        const user = await newUser.save()
+        const user = await newUser.save();
         
-        // Truyền cả user._id và user.role (là 'customer')
-        const token = createToken(user._id, user.role)
+        const token = createToken(user._id, user.role);
         
-        // Trả về thêm role
-        res.json({success:true, token, role: user.role});
+        res.json({ success: true, token, role: user.role });
+
     } catch (error) {
         console.log(error);
-        res.json({success:false,message:"Error"})
+        res.json({ success: false, message: "Error" });
     }
 }
 

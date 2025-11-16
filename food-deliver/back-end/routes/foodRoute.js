@@ -1,34 +1,31 @@
 import express from 'express';
-import { 
-    addFood, 
-    listFood, // Đây là API cho Chủ nhà hàng (Owner)
-    removeFood, 
-    updateFood, 
+import {
+    addFood,
+    listFood,
+    removeFood,
+    updateFood,
     getFoodById,
-    listFoodByRestaurant // Đây là API cho Khách hàng (Customer)
+    listFoodByRestaurant
 } from '../controllers/foodController.js';
-import authMiddleware from '../middleware/auth.js'; 
+import checkAuth from '../middleware/checkAuth.js';
 import multer from 'multer';
+import checkRole from '../middleware/checkRole.js';
 
 const foodRouter = express.Router();
-
-//img storage engine (Phần này của bạn đã OK)
 const storage = multer.diskStorage({
     destination: "uploads",
-    filename: (req, file, cb)=>{
-        return cb(null, `${Date.now()}${file.originalname}`);
-    }
-})
-const upload = multer({storage: storage});
+    filename: (req, file, cb) => cb(null, `${Date.now()}${file.originalname}`)
+});
+const upload = multer({ storage });
 
-// === CÁC ROUTE CỦA CHỦ NHÀ HÀNG (OWNER) ===
-foodRouter.post('/add', authMiddleware, upload.single("image"), addFood);
-foodRouter.post('/remove', authMiddleware, removeFood);
-foodRouter.post('/update', authMiddleware, upload.single("image"), updateFood);
-foodRouter.get('/list', authMiddleware, listFood); // Lấy danh sách món ăn CỦA CHỦ NHÀ HÀNG
+// Chỉ cho phép nhà hàng (restaurant) thêm, xóa, cập nhật, xem danh sách món ăn
+foodRouter.post('/add', checkAuth, checkRole(['restaurant']), upload.single("image"), addFood);
+foodRouter.post('/remove', checkAuth, checkRole(['restaurant']), removeFood);
+foodRouter.post('/update', checkAuth, checkRole(['restaurant']), upload.single("image"), updateFood);
+foodRouter.get('/list', checkAuth, checkRole(['restaurant']), listFood);
 
-// === CÁC ROUTE CÔNG KHAI (PUBLIC) CHO KHÁCH HÀNG ===
-foodRouter.get("/get/:id", getFoodById); // Lấy chi tiết 1 món ăn
-foodRouter.get("/list/restaurant/:restaurantId", listFoodByRestaurant); // Lấy menu của 1 nhà hàng
+// Cho phép tất cả người dùng đã xác thực xem món ăn theo ID và danh sách món ăn của nhà hàng
+foodRouter.get("/get/:id", getFoodById);
+foodRouter.get("/list/restaurant/:restaurantId", listFoodByRestaurant);
 
 export default foodRouter;

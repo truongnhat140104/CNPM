@@ -1,29 +1,15 @@
-// foodController.js (Đã sửa cho logic nhiều nhà hàng)
 import foodModel from "../models/foodModel.js";
 import restaurantModel from "../models/resModel.js";
 import userModel from "../models/userModel.js";
 import fs from 'fs';
 import path from 'path';
 
-// Lấy nhà hàng của chủ sở hữu ---
-const getRestaurantByOwner = async (ownerId) => {
-    const user = await userModel.findById(ownerId);
-    if (user.role !== 'owner') {
-        throw new Error("User is not an owner");
-    }
-    const restaurant = await restaurantModel.findOne({ owner: ownerId });
-    if (!restaurant) {
-        throw new Error("Restaurant not found for this owner");
-    }
-    return restaurant;
-}
-
 // add food item
 const addFood = async(req,res)=>{
     try{
         const restaurantId = req.body.restaurantId; 
         
-        const restaurant = await resModel.findById(restaurantId);
+        const restaurant = await restaurantModel.findById(restaurantId);
         if (!restaurant) {
              return res.json({success:false, message: "Restaurant not found"});
         }
@@ -45,7 +31,7 @@ const addFood = async(req,res)=>{
 const listFood = async(req,res)=>{
     try{
         // 1. Tìm nhà hàng của người đang đăng nhập
-        const restaurant = await getRestaurantByOwner(req.body.userId);
+        const restaurant = await restaurantModel.findById(req.body.restaurantId);
 
         // 2. Chỉ tìm món ăn thuộc nhà hàng đó
         const foods = await foodModel.find({ restaurant_id: restaurant._id });
@@ -59,7 +45,7 @@ const listFood = async(req,res)=>{
 const removeFood = async(req,res)=>{
     try{
         // 1. Tìm nhà hàng của người đang đăng nhập
-        const restaurant = await getRestaurantByOwner(req.body.userId);
+        const restaurant = await restaurantModel.findById(req.body.restaurantId);
 
         // 2. Tìm món ăn cần xóa
         const food = await foodModel.findById(req.body.id);
@@ -88,7 +74,7 @@ const removeFood = async(req,res)=>{
 const updateFood = async(req,res)=>{
     try{
         // 1. Tìm nhà hàng của người đang đăng nhập
-        const restaurant = await getRestaurantByOwner(req.body.userId);
+        const restaurant = await restaurantModel.findById(req.body.restaurantId);
         const foodId = req.body.id;
 
         // 2. Tìm món ăn cần sửa
