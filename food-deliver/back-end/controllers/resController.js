@@ -1,68 +1,5 @@
 import resModel from "../models/restaurantProfile.js";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import validator from "validator";
-
-const createRestaurantToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET)
-}
-
-const registerRestaurant = async (req, res) => {
-    const { name, address, phone, email, password, description, image } = req.body;
-    try {
-        const exists = await resModel.findOne({ email });
-        if (exists) {
-            return res.json({ success: false, message: "Restaurant with this email already exists" });
-        }
-        if (!validator.isEmail(email)) {
-            return res.json({ success: false, message: "Invalid email" });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const newRestaurant = new resModel({
-            name,
-            address,
-            phone,
-            email,
-            password: hashedPassword,
-            description,
-            image
-        });
-
-        const restaurant = await newRestaurant.save();
-        const token = createRestaurantToken(restaurant._id);
-        res.json({ success: true, token });
-
-    } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Server error" });
-    }
-};
-
-// 2. Đăng nhập cho nhà hàng (MỚI)
-const loginRestaurant = async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const restaurant = await resModel.findOne({ email });
-        if (!restaurant) {
-            return res.json({ success: false, message: "Restaurant email does not exist" });
-        }
-
-        const isMatch = await bcrypt.compare(password, restaurant.password);
-        if (!isMatch) {
-            return res.json({ success: false, message: "Incorrect password" });
-        }
-
-        const token = createRestaurantToken(restaurant._id);
-        res.json({ success: true, token });
-
-    } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Server error" });
-    }
-};
+import foodModel from "../models/foodModel.js";
 
 const getAllRestaurants = async (req, res) => {
     try {
@@ -91,7 +28,7 @@ const getRestaurantById = async (req, res) => {
 const getFoodsByRestaurantId = async (req, res) => {
     const { id } = req.params;
     try {
-        const foods = await foodModel.find({ restaurant_id: id });
+        const foods = await foodModel.find({ restaurantId: id }); 
         res.json({ success: true, data: foods });
     } catch (error) {
         console.log(error);
@@ -99,76 +36,94 @@ const getFoodsByRestaurantId = async (req, res) => {
     }
 };
 
-const createRestaurant = async (req, res) => {
-    const userId = req.body.userId;
-    const { name, address, phone, image, description } = req.body;
+const getMyRestaurantProfile = async (req, res) => {
+    try {
+        const profile = await resModel.findOne({ restaurant: req.user.id });
+
+        if (!profile) {
+            return res.json({ success: false, message: "Profile not found. Please create one.", data: null });
+        }
+        res.json({ success: true, data: profile });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Server Error" });
+    }
+};
+
+const createRestaurantProfile = async (req, res) => {
+    const userId = req.user.id; 
 
     try {
-        const existingRestaurant = await resModel.findOne({ owner: userId });
-        if (existingRestaurant) {
-            return res.json({ success: false, message: "You already own a restaurant." });
+        const existingProfile = await resModel.findOne({ restaurant: userId });
+        if (existingProfile) {
+            return res.json({ success: false, message: "You already have a restaurant profile." });
         }
 
-        const newRestaurant = new resModel({
-            name,
-            address,
-            phone,
-            // image: image || "",
-            description: description || "",
-            owner: userId
+        const newProfile = new resModel({
+            ...req.body,
+            restaurant: userId, 
+            image: req.file ? req.file.filename : ""
         });
-        await newRestaurant.save();
-        
-        res.json({ success: true, message: "Restaurant created successfully", data: newRestaurant });
+
+        await newProfile.save();
+        res.json({ success: true, message: "Restaurant profile created", data: newProfile });
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: "Error creating restaurant" });
+        res.json({ success: false, message: "Error creating restaurant profile" });
     }
 };
 
-const updateRestaurant = async (req, res) => {
-    const restaurantId = req.params.id;
-    const ownerId = req.body.userId;
-    const updateData = req.body;
+const updateRestaurantProfile = async (req, res) => {
+    const userId = req.user.id; 
 
     try {
-        const restaurant = await resModel.findById(restaurantId);
-        if (!restaurant) {
-            return res.json({ success: false, message: "Restaurant not found" });
+        const updateData = { ...req.body };
+        if (req.file) {
+            updateData.image = req.file.filename;
         }
 
-        if (restaurant.owner.toString() !== ownerId) {
-            return res.json({ success: false, message: "Authorization Failed: This is not your restaurant." });
-        }
-        
-        delete updateData.owner;
-        delete updateData.userId;
+        const updatedProfile = await resModel.findOneAndUpdate(
+            { restaurant: userId }, 
+            updateData, 
+            { new: true }
+        );
 
-        const updatedRestaurant = await resModel.findByIdAndUpdate(restaurantId, updateData, { new: true });
-        res.json({ success: true, message: "Restaurant updated successfully", data: updatedRestaurant });
+        if (!updatedProfile) {
+            return res.json({ success: false, message: "Restaurant profile not found" });
+        }
+
+        res.json({ success: true, message: "Profile updated", data: updatedProfile });
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: "Error updating restaurant" });
+        res.json({ success: false, message: "Error updating restaurant profile" });
     }
 };
 
-const deleteRestaurant = async (req, res) => {
-    const restaurantId = req.params.id;
+const deleteMyRestaurant = async (req, res) => {
+    const userId = req.user.id; 
 
     try {
-        const restaurant = await resModel.findById(restaurantId);
-        if (!restaurant) {
-            return res.json({ success: false, message: "Restaurant not found" });
+        const profile = await resModel.findOneAndDelete({ restaurant: userId }); 
+        
+        if (!profile) {
+            return res.json({ success: false, message: "Restaurant profile not found" });
         }
+        await foodModel.deleteMany({ restaurantId: profile._id });
 
-        await resModel.findByIdAndDelete(restaurantId);
-        await foodModel.deleteMany({ restaurant_id: restaurantId });
-
-        res.json({ success: true, message: "Restaurant deleted successfully" });
+        res.json({ success: true, message: "Restaurant profile and all associated foods deleted" });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: "Error deleting restaurant" });
     }
 };
 
-export { registerRestaurant, loginRestaurant, getAllRestaurants, getRestaurantById, getFoodsByRestaurantId, createRestaurant, updateRestaurant, deleteRestaurant };
+
+export { 
+    getAllRestaurants, 
+    getRestaurantById, 
+    getFoodsByRestaurantId, 
+    getMyRestaurantProfile,
+    createRestaurantProfile,
+    updateRestaurantProfile,
+    deleteMyRestaurant
+};
