@@ -12,8 +12,7 @@ const Login = ({ setIsLoggedIn }) => {
     const [data, setData] = useState({
         name: "",
         email: "",
-        password: "",
-        address: ""
+        password: ""
     });
 
     const onChangeHandler = (event) => {
@@ -27,22 +26,28 @@ const Login = ({ setIsLoggedIn }) => {
 
         let newUrl = url;
         if (currState === "Login") {
-            newUrl += "/api/restaurant/login"; 
+            newUrl += "/api/user/login"; 
         } else {
-            newUrl += "/api/restaurant/register";
+            newUrl += "/api/user/register";
+        }
+
+        const payload = { ...data };
+
+        if (currState === "Sign Up") {
+            payload.role = "restaurant"; 
         }
 
         try {
-            const response = await axios.post(newUrl, data);
+            const response = await axios.post(newUrl, payload);
 
             if (response.data.success) {
                 const { token, role } = response.data;
 
                 localStorage.setItem("token", token);
 
-                // if (role) {
-                //     localStorage.setItem("role", role);
-                // }
+                if (role) {
+                    localStorage.setItem("role", role);
+                }
 
                 setIsLoggedIn(true);
 
@@ -53,6 +58,7 @@ const Login = ({ setIsLoggedIn }) => {
             }
 
         } catch (error) {
+            console.error(error);
             if (error.response && error.response.data && error.response.data.message) {
                 toast.error(error.response.data.message);
             } else {
@@ -71,22 +77,14 @@ const Login = ({ setIsLoggedIn }) => {
                     {
                         currState === "Login" ? <></> 
                         : 
-                        <>
                         <input 
                             name='name'
                             onChange={onChangeHandler}
                             value={data.name}
                             type="text" 
                             placeholder='Your Name' 
-                            required />
-                        <input 
-                            name='address'
-                            onChange={onChangeHandler}
-                            value={data.address}
-                            type="text" 
-                            placeholder='Restaurant Address' 
-                            required />
-                        </>
+                            required 
+                        />
                     }
                     <input 
                         name='email'

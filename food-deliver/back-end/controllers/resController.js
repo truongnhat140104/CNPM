@@ -1,4 +1,4 @@
-import resModel from "../models/resModel.js";
+import resModel from "../models/restaurantProfile.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";

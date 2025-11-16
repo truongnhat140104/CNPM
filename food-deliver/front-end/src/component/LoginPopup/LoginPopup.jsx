@@ -1,34 +1,33 @@
-import React, { useState } from 'react';
-import './Login.css';
-import axios from "axios";
+
+import React, { useState, useContext } from 'react';
+import './LoginPopup.css';
+import { assets } from '../../assets/assets';
+import { StoreContext } from '../../context/StoreContext';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const Login = ({ setIsLoggedIn }) => {
-
-    const url = "http://localhost:4000";
+const LoginPopup = ({ setShowLogin }) => {
+    const { url, setToken, setRole } = useContext(StoreContext);
+    const urlAdmin = 'http://localhost:5174';
+    const urlOwner = 'http://localhost:5175';
 
     const [currState, setCurrState] = useState('Login');
+    const [data, setData] = useState({ name: '', email: '', password: '' });
 
-    const [data, setData] = useState({
-        name: "",
-        email: "",
-        password: ""
-    });
-
-    const onChangeHandler = (event) => {
+    const onChangHandler = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        setData(data => ({ ...data, [name]: value }));
-    }
+        setData((d) => ({ ...d, [name]: value }));
+    };
 
     const onLogin = async (event) => {
         event.preventDefault();
 
         let newUrl = url;
-        if (currState === "Login") {
-            newUrl += "/api/user/login"; 
+        if (currState === 'Login') {
+            newUrl += '/api/user/login';
         } else {
-            newUrl += "/api/user/register";
+            newUrl += '/api/user/register';
         }
 
         try {
@@ -36,81 +35,95 @@ const Login = ({ setIsLoggedIn }) => {
 
             if (response.data.success) {
                 const { token, role } = response.data;
+                setToken(token);
+                setRole(role);
+                localStorage.setItem('token', token);
+                localStorage.setItem('role', role);
+                setShowLogin(false);
+                toast.success(currState === 'Login' ? 'Login Successful!' : 'Registration Successful!');
 
-                localStorage.setItem("token", token);
-                if (role) {
-                    localStorage.setItem("role", role);
-                }
+                if (role === 'admin') {
+                    window.location.href = `${urlAdmin}/?token=${token}&role=${role}`;
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("role");
 
-                setIsLoggedIn(true);
-
-                toast.success(currState === "Login" ? "Login Successful!" : "Registration Successful!");
-
+                } 
+                else if (role === 'restaurant') {
+                        window.location.href = `${urlOwner}/?token=${token}&role=${role}`;
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("role");
+                    }
             } else {
                 toast.error(response.data.message);
             }
-
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {
                 toast.error(error.response.data.message);
             } else {
-                toast.error("An error occurred. Please try again.");
+                toast.error('An error occurred. Please try again.');
             }
         }
-    }
+    };
+
     return (
-        <div className='login'>
-            <form onSubmit={onLogin} className="login-container">
-                <div className="login-title">
+        <div className="login-popup">
+            <form onSubmit={onLogin} className="login-popup-container">
+                <div className="login-popup-title">
                     <h2>{currState}</h2>
-                    <span>Restaurant</span>
+                    <img onClick={() => setShowLogin(false)} src={assets.cross_icon} alt="" />
                 </div>
-                <div className="login-inputs">
-                    {currState === "Login" ? <></> : (
+                <div className="login-popup-inputs">
+                    {currState === 'Login' ? null : (
                         <input
-                            name='name'
-                            onChange={onChangeHandler}
-                            value={data.name}
                             type="text"
-                            placeholder='Your Name'
-                            required />
+                            name="name"
+                            onChange={onChangHandler}
+                            value={data.name}
+                            placeholder="Your Name"
+                            required
+                        />
                     )}
+
                     <input
-                        name='email'
-                        onChange={onChangeHandler}
-                        value={data.email}
                         type="email"
-                        placeholder='Email'
+                        name="email"
+                        onChange={onChangHandler}
+                        value={data.email}
+                        placeholder="Your Email"
                         required
                     />
+
                     <input
-                        name='password'
-                        onChange={onChangeHandler}
-                        value={data.password}
                         type="password"
-                        placeholder='Password'
+                        name="password"
+                        onChange={onChangHandler}
+                        value={data.password}
+                        placeholder="Your Password"
                         required
                     />
                 </div>
 
-                <button type='submit'>
-                    {currState === "Sign Up" ? "Create Account" : "Log In"}
-                </button>
+                <button type="submit">{currState === 'Sign Up' ? 'Create Account' : 'Login'}</button>
 
-                {currState === "Sign Up" && (
+                {currState === 'Sign Up' && (
                     <div className="login-popup-condition">
                         <input type="checkbox" required />
                         <p>By continuing, I agree to the terms of use and privacy policy.</p>
                     </div>
                 )}
 
-                {currState === "Login"
-                    ? <p>Create a new account? <span onClick={() => setCurrState('Sign Up')}>Click here</span></p>
-                    : <p>Already have an account? <span onClick={() => setCurrState('Login')}>Login here</span></p>
-                }
+                {currState === 'Login' ? (
+                    <p>
+                        Create a new account? <span onClick={() => setCurrState('Sign Up')}>Click here</span>
+                    </p>
+                ) : (
+                    <p>
+                        Already have an account? <span onClick={() => setCurrState('Login')}>Login here</span>
+                    </p>
+                )}
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default Login;
+export default LoginPopup;

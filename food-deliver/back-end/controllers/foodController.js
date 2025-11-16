@@ -1,5 +1,5 @@
 import foodModel from "../models/foodModel.js";
-import restaurantModel from "../models/resModel.js";
+import restaurantModel from "../models/restaurantProfile.js";
 import userModel from "../models/userModel.js";
 import fs from 'fs';
 import path from 'path';
