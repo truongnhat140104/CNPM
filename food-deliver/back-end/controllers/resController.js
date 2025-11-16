@@ -1,6 +1,68 @@
-import foodModel from "../models/foodModel.js";
 import resModel from "../models/resModel.js";
-import userModel from "../models/userModel.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import validator from "validator";
+
+const createRestaurantToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET)
+}
+
+const registerRestaurant = async (req, res) => {
+    const { name, address, phone, email, password, description, image } = req.body;
+    try {
+        const exists = await resModel.findOne({ email });
+        if (exists) {
+            return res.json({ success: false, message: "Restaurant with this email already exists" });
+        }
+        if (!validator.isEmail(email)) {
+            return res.json({ success: false, message: "Invalid email" });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newRestaurant = new resModel({
+            name,
+            address,
+            phone,
+            email,
+            password: hashedPassword,
+            description,
+            image
+        });
+
+        const restaurant = await newRestaurant.save();
+        const token = createRestaurantToken(restaurant._id);
+        res.json({ success: true, token });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Server error" });
+    }
+};
+
+// 2. Đăng nhập cho nhà hàng (MỚI)
+const loginRestaurant = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const restaurant = await resModel.findOne({ email });
+        if (!restaurant) {
+            return res.json({ success: false, message: "Restaurant email does not exist" });
+        }
+
+        const isMatch = await bcrypt.compare(password, restaurant.password);
+        if (!isMatch) {
+            return res.json({ success: false, message: "Incorrect password" });
+        }
+
+        const token = createRestaurantToken(restaurant._id);
+        res.json({ success: true, token });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Server error" });
+    }
+};
 
 const getAllRestaurants = async (req, res) => {
     try {
@@ -38,16 +100,11 @@ const getFoodsByRestaurantId = async (req, res) => {
 };
 
 const createRestaurant = async (req, res) => {
-    const ownerId = req.body.userId;
+    const userId = req.body.userId;
     const { name, address, phone, image, description } = req.body;
 
     try {
-        const user = await userModel.findById(ownerId);
-        if (!user || user.role !== 'owner') {
-            return res.json({ success: false, message: "Authorization Failed: Only owners can create." });
-        }
-
-        const existingRestaurant = await resModel.findOne({ owner: ownerId });
+        const existingRestaurant = await resModel.findOne({ owner: userId });
         if (existingRestaurant) {
             return res.json({ success: false, message: "You already own a restaurant." });
         }
@@ -56,12 +113,12 @@ const createRestaurant = async (req, res) => {
             name,
             address,
             phone,
-            image: image || "",
+            // image: image || "",
             description: description || "",
-            owner: ownerId
+            owner: userId
         });
-        
         await newRestaurant.save();
+        
         res.json({ success: true, message: "Restaurant created successfully", data: newRestaurant });
     } catch (error) {
         console.log(error);
@@ -114,4 +171,4 @@ const deleteRestaurant = async (req, res) => {
     }
 };
 
-export { getAllRestaurants, getRestaurantById, getFoodsByRestaurantId, createRestaurant, updateRestaurant, deleteRestaurant };
+export { registerRestaurant, loginRestaurant, getAllRestaurants, getRestaurantById, getFoodsByRestaurantId, createRestaurant, updateRestaurant, deleteRestaurant };

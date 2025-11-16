@@ -87,7 +87,6 @@ const removeUser = async (req, res) => {
     try {
         const deletedUser = await userModel.findByIdAndDelete(id);
         if (deletedUser) {
-            // TODO: Nếu user này là 'owner', bạn cũng nên xóa 'restaurant' của họ
             res.json({ success: true, message: "User deleted successfully" });
         } else {
             res.json({ success: false, message: "User not found" });
@@ -101,7 +100,7 @@ const removeUser = async (req, res) => {
 const listUsers = async (req, res) => {
     const role = req.query.role;
     try {
-        const users = await userModel.find({role : { $in: ['customer'] } }); // Lọc chỉ lấy customer
+        const users = await userModel.find({});
         res.json({ success: true, data: users });
     } catch (error) {
         console.log(error);
@@ -110,7 +109,6 @@ const listUsers = async (req, res) => {
 }
 
 const updateUserStatus = async (req, res) => {
-    // ... (Giữ nguyên code của bạn)
     const { userId, status } = req.body;
     try {
         const user = await userModel.findById(userId);

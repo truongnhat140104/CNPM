@@ -1,12 +1,11 @@
-import { } from '../controllers/resController.js';
 import express from 'express';
-import authMiddleware from '../Middleware/authMiddleware.js';
-import adminMiddleware from '../Middleware/adminMiddleware.js';
+import resAuthMiddleware from '../middleware/resAuthMiddleware.js'; 
 import { 
     getAllRestaurants, 
     getRestaurantById, 
     getFoodsByRestaurantId, 
-    createRestaurant, 
+    registerRestaurant,
+    loginRestaurant,
     updateRestaurant,
     deleteRestaurant
 } from '../controllers/resController.js';
@@ -16,8 +15,11 @@ const resRouter = express.Router();
 resRouter.get('/', getAllRestaurants);
 resRouter.get('/:id', getRestaurantById);
 resRouter.get('/:id/foods', getFoodsByRestaurantId);
-resRouter.post('/create', authMiddleware, createRestaurant); // Bảo vệ route này
-resRouter.put('/update/:id', authMiddleware, updateRestaurant); // Bảo vệ route này
-resRouter.delete('/delete/:id',adminMiddleware, deleteRestaurant); // Bảo vệ route này
+
+resRouter.post('/register', registerRestaurant);
+resRouter.post('/login', loginRestaurant);
+
+resRouter.put('/update', resAuthMiddleware, updateRestaurant); 
+resRouter.delete('/delete', resAuthMiddleware, deleteRestaurant); 
 
 export default resRouter;

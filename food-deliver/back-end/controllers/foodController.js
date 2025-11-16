@@ -1,6 +1,6 @@
 // foodController.js (Đã sửa cho logic nhiều nhà hàng)
 import foodModel from "../models/foodModel.js";
-import restaurantModel from "../models/restaurantModel.js";
+import restaurantModel from "../models/resModel.js";
 import userModel from "../models/userModel.js";
 import fs from 'fs';
 import path from 'path';
@@ -18,21 +18,19 @@ const getRestaurantByOwner = async (ownerId) => {
     return restaurant;
 }
 
-// add food item (Chỉ chủ nhà hàng mới được thêm)
+// add food item
 const addFood = async(req,res)=>{
     try{
-        // 1. Tìm nhà hàng của người đang đăng nhập
-        const restaurant = await getRestaurantByOwner(req.body.userId);
+        const restaurantId = req.body.restaurantId; 
+        
+        const restaurant = await resModel.findById(restaurantId);
+        if (!restaurant) {
+             return res.json({success:false, message: "Restaurant not found"});
+        }
 
-        // 2. Tạo món ăn với restaurant_id
-        const image_filename = req.file.filename;
         const food = new foodModel({
             name: req.body.name,
-            description: req.body.description,
-            category: req.body.category,
-            price: req.body.price,
-            image: image_filename,
-            restaurant_id: restaurant._id
+            restaurant_id: restaurantId
         });
     
         await food.save();
@@ -161,9 +159,9 @@ const listFoodByRestaurant = async (req, res) => {
 
 export {
     addFood, 
-    listFood, // Dùng cho chủ nhà hàng (yêu cầu auth)
+    listFood,
     removeFood, 
     updateFood, 
-    getFoodById, // Dùng cho khách hàng (công khai)
-    listFoodByRestaurant // Dùng cho khách hàng (công khai)
+    getFoodById,
+    listFoodByRestaurant
 };
