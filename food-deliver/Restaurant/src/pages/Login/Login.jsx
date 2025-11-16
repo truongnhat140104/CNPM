@@ -12,7 +12,8 @@ const Login = ({ setIsLoggedIn }) => {
     const [data, setData] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        address: ""
     });
 
     const onChangeHandler = (event) => {
@@ -26,9 +27,9 @@ const Login = ({ setIsLoggedIn }) => {
 
         let newUrl = url;
         if (currState === "Login") {
-            newUrl += "/api/user/login"; 
+            newUrl += "/api/restaurant/login"; 
         } else {
-            newUrl += "/api/user/register";
+            newUrl += "/api/restaurant/register";
         }
 
         try {
@@ -38,9 +39,10 @@ const Login = ({ setIsLoggedIn }) => {
                 const { token, role } = response.data;
 
                 localStorage.setItem("token", token);
-                if (role) {
-                    localStorage.setItem("role", role);
-                }
+
+                // if (role) {
+                //     localStorage.setItem("role", role);
+                // }
 
                 setIsLoggedIn(true);
 
@@ -63,47 +65,59 @@ const Login = ({ setIsLoggedIn }) => {
             <form onSubmit={onLogin} className="login-container">
                 <div className="login-title">
                     <h2>{currState}</h2>
-                    <span>Restaurant</span>
+                    <span>Restaurant</span> 
                 </div>
                 <div className="login-inputs">
-                    {currState === "Login" ? <></> : (
-                        <input
+                    {
+                        currState === "Login" ? <></> 
+                        : 
+                        <>
+                        <input 
                             name='name'
                             onChange={onChangeHandler}
                             value={data.name}
-                            type="text"
-                            placeholder='Your Name'
+                            type="text" 
+                            placeholder='Your Name' 
                             required />
-                    )}
-                    <input
+                        <input 
+                            name='address'
+                            onChange={onChangeHandler}
+                            value={data.address}
+                            type="text" 
+                            placeholder='Restaurant Address' 
+                            required />
+                        </>
+                    }
+                    <input 
                         name='email'
-                        onChange={onChangeHandler}
-                        value={data.email}
-                        type="email"
-                        placeholder='Email'
-                        required
+                        onChange={onChangeHandler} 
+                        value={data.email} 
+                        type="email" 
+                        placeholder='Email' 
+                        required 
                     />
-                    <input
+                    <input 
                         name='password'
-                        onChange={onChangeHandler}
-                        value={data.password}
-                        type="password"
-                        placeholder='Password'
-                        required
+                        onChange={onChangeHandler} 
+                        value={data.password} 
+                        type="password" 
+                        placeholder='Password' 
+                        required 
                     />
+                    
                 </div>
-
+                
                 <button type='submit'>
                     {currState === "Sign Up" ? "Create Account" : "Log In"}
                 </button>
-
+                
                 {currState === "Sign Up" && (
                     <div className="login-popup-condition">
                         <input type="checkbox" required />
-                        <p>By continuing, I agree to the terms of use and privacy policy.</p>
+                        <p>By Continuing, I agree to the terms of use and privacy policy.</p>
                     </div>
                 )}
-
+            
                 {currState === "Login"
                     ? <p>Create a new account? <span onClick={() => setCurrState('Sign Up')}>Click here</span></p>
                     : <p>Already have an account? <span onClick={() => setCurrState('Login')}>Login here</span></p>

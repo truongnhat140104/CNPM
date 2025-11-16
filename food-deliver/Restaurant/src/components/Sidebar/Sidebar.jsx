@@ -1,9 +1,19 @@
 import React from 'react'
 import './Sidebar.css'
 import { assets } from '../../assets/assets'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';     
 
 const Sidebar = () => {
+
+    const navigate = useNavigate();
+    const logout = () => {
+        toast.success("Logged out successfully!");
+        localStorage.removeItem("token");
+        navigate('/login');
+        window.location.reload();
+    }
+
   return (
     <div className='sidebar'>
         <div className="sidebar-options">
@@ -22,6 +32,13 @@ const Sidebar = () => {
             <NavLink to='orders' className="sidebar-option">
                 <img src={assets.order_icon} alt="" className='icon_size'/>
                 <p>Order</p>
+            </NavLink>
+            
+        </div>
+        <div className='sidebar-logout'>
+            <NavLink to='logout' className="logout-btn sidebar-option" onClick={ logout }>
+                <img src={assets.order_icon} alt="" className='icon_size'/>
+                <p>Logout</p>
             </NavLink>
         </div>
         

@@ -10,6 +10,7 @@ import Verify from './pages/Verify/Verify'
 import MyOrders from './pages/MyOrders/MyOrders'
 import { ToastContainer } from 'react-toastify'
 import FoodItemDetail from './component/FoodItemDetail/FoodItemDetail'
+// import RegisRes from './pages/RegisRes/RegisRes.jsx'
   
 const App = () => {
   const [showLogin,setShowLogin] = React.useState(false);
@@ -26,6 +27,7 @@ const App = () => {
         <Route path='/verify' element={<Verify/>}/>
         <Route path='/myorders' element={<MyOrders/>}/>
         <Route path='/food/:id' element={<FoodItemDetail/>}/> 
+        {/* <Route path='/regisRes' element={<RegisRes/>}/>  */}
       </Routes>
     </div>
       <Footer/>
