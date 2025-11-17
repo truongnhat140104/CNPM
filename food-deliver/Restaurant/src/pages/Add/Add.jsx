@@ -11,7 +11,7 @@ const Add = ({url}) => {
     const [data,setData] = useState({
       name:"",
       description:"",
-      category:"Gato",
+      category:"Main course",
       price:""
     })
 
@@ -40,14 +40,14 @@ const Add = ({url}) => {
       const response = await axios.post(
         `${url}/api/food/add`, 
         formData, 
-        { headers: { token } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if(response.data.success){
         setData({
           name:"",
           description:"",
-          category:"Gato",
+          category:"Main course",
           price:""
         });
         setImage(false);
@@ -82,14 +82,15 @@ const Add = ({url}) => {
           <div className="add-category flex-col">
             <p>Product Category</p>
             <select onChange={onChangeHandler} value={data.category} name='category'>
-              <option value="Gato">Gato</option>
-              <option value="Cupcake">Cupcake</option>
-              <option value="Tart">Tart</option>
-              <option value="Donut">Donut</option>
+              <option value="Maincourse">Main course</option>
+              <option value="Bakery">Bakery</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Drinks">Drinks </option>
+              <option value="Fastfood">Fast Food</option>
             </select>
           </div>
           <div className="add-price flex-col">
-            <p>Product Type</p>
+            <p>Product Price</p>
             <input onChange={onChangeHandler} value={data.price} type="Number" name="price" placeholder='$20' />
           </div>
         </div>
