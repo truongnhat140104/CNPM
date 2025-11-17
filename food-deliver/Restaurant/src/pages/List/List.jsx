@@ -18,7 +18,7 @@ const List = ({url}) => {
       return;
     }
     try {
-      const response = await axios.get(`${url}/api/food/list`, { headers: { token } });
+      const response = await axios.get(`${url}/api/food/list`, { headers: { Authorization: `Bearer ${token}` } });
       if (response.data.success) {
         setList(response.data.data);
       } else {
@@ -46,7 +46,7 @@ const List = ({url}) => {
     const response = await axios.post(
       `${url}/api/food/remove/`,
       { id: id },
-      { headers: { token } }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
     
     await fetchList();

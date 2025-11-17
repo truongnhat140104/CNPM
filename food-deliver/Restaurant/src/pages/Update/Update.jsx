@@ -10,8 +10,8 @@ const Update = ({url}) => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const token = localStorage.getItem("token");
 
-    // Lấy ID từ state được truyền qua navigate
     const [id] = useState(location.state?.id); 
 
     const [image,setImage] = useState(false); 
@@ -20,17 +20,15 @@ const Update = ({url}) => {
     const [data,setData] = useState({
       name:"",
       description:"",
-      category:"Gato",
+      category:"Main course",
       price:""
     })
 
-    // 1. Dùng useEffect để lấy dữ liệu khi ở chế độ EDIT
     useEffect(() => {
       if (id) {
-        // --- Chế độ EDIT ---
         const fetchFoodData = async () => {
           try {
-            const response = await axios.get(`${url}/api/food/get/${id}`);
+            const response = await axios.get(`${url}/api/food/get/${id}`, {headers: { Authorization: `Bearer ${token}` }});
             if (response.data.success) {
               const foodData = response.data.data;
               setData({
@@ -42,11 +40,11 @@ const Update = ({url}) => {
               setPreviewUrl(`${url}/images/${foodData.image}`);
             } 
             else {
-              toast.error("Không thể tải dữ liệu sản phẩm.");
+              toast.error("Cannot fetch food data.");
             }
           } 
           catch (err) {
-            toast.error("Lỗi server khi tải dữ liệu.");
+            toast.error("Server error while fetching data.");
           }
         };
         fetchFoodData();
@@ -85,33 +83,29 @@ const Update = ({url}) => {
       let response;
 
       if (id) {
-        formData.append("id", id); // Thêm ID để backend biết update item nào
-        // Chỉ thêm ảnh nếu người dùng chọn ảnh mới
+        formData.append("id", id);
         if (image) {
           formData.append("image", image);
         }
-        response = await axios.post(`${url}/api/food/update`, formData);
+        response = await axios.post(`${url}/api/food/update`, formData, {headers: { Authorization: `Bearer ${token}` }});
 
       } else {
         formData.append("image", image);
-        response = await axios.post(`${url}/api/food/add`, formData);
+        response = await axios.post(`${url}/api/food/add`, formData, {headers: { Authorization: `Bearer ${token}` }});
       }
 
-      // Xử lý kết quả
       if(response.data.success){
         toast.success(response.data.message);
         if (!id) {
-          // Nếu là ADD, reset form
           setData({
             name:"",
             description:"",
-            category:"Gato",
+            category:"Main course",
             price:""
           });
           setImage(false);
           setPreviewUrl(assets.upload_area);
         }
-        // Tùy chọn: Tự động quay về trang list
         navigate('/list'); 
       }
       else{
@@ -125,7 +119,6 @@ const Update = ({url}) => {
         <div className="add-img-upload flex-col">
           <p>Upload img</p>
           <label htmlFor="image">
-            {/* 4. Cập nhật src cho preview */}
             <img src={previewUrl} alt="" />
           </label>
           <input 
@@ -133,7 +126,6 @@ const Update = ({url}) => {
             type="file" 
             id="image" 
             hidden 
-            // 5. Chỉ 'required' khi thêm mới (không 'required' khi edit)
             required={!id} 
           />
         </div> 
@@ -151,18 +143,18 @@ const Update = ({url}) => {
           <div className="add-category flex-col">
             <p>Product Category</p>
             <select onChange={(e) => setData({...data, category: e.target.value})} value={data.category} name='category'>
-              <option value="Gato">Gato</option>
-              <option value="Cupcake">Cupcake</option>
-              <option value="Tart">Tart</option>
-              <option value="Donut">Donut</option>
+              <option value="Maincourse">Main course</option>
+              <option value="Bakery">Bakery</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Drinks">Drinks </option>
+              <option value="Fastfood">Fast Food</option>
             </select>
           </div>
           <div className="add-price flex-col">
-            <p>Product Price</p> {/* Đã sửa "Product Type" thành "Product Price" */}
+            <p>Product Price</p>
             <input onChange={(e) => setData({...data, price: e.target.value})} value={data.price} type="Number" name="price" placeholder='$20' required />
           </div>
         </div>
-        {/* 6. Thay đổi text của Button */}
         <button type="submit" className='add-btn'>
           {id ? "UPDATE" : "ADD"}
         </button>

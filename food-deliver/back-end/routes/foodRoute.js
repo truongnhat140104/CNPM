@@ -5,7 +5,9 @@ import {
     removeFood,
     updateFood,
     getFoodById,
-    listFoodByRestaurant
+    listFoodByRestaurant,
+    listFoodByMenu,
+    listAllFoodPublic
 } from '../controllers/foodController.js';
 import checkAuth from '../middleware/checkAuth.js';
 import multer from 'multer';
@@ -27,5 +29,7 @@ foodRouter.get('/list', checkAuth, checkRole(['restaurant']), listFood);
 // Cho phép tất cả người dùng đã xác thực xem món ăn theo ID và danh sách món ăn của nhà hàng
 foodRouter.get("/get/:id", getFoodById);
 foodRouter.get("/list/restaurant/:restaurantId", listFoodByRestaurant);
+foodRouter.get("/list/menu/:menuName", listFoodByMenu);
+foodRouter.get("/all", listAllFoodPublic);
 
 export default foodRouter;
