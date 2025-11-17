@@ -3,9 +3,10 @@ import './PlaceOrder.css';
 import { useNavigate } from 'react-router-dom';
 import { StoreContext } from "../../context/StoreContext"
 import axios from 'axios'
+import { toast } from 'react-toastify';
 const PlaceOrder = () => {
 
-  const {getTotalCartAmount,token,food_list,cartItems,url} = useContext(StoreContext)
+  const {getTotalCartAmount, token, food_list, cartItems, url, setCartItems} = useContext(StoreContext)
 
   const [data, setData] = useState({
         firstName: "",
@@ -26,27 +27,29 @@ const PlaceOrder = () => {
     }
 
     const placeOrder = async (event) => {
-      event.preventDefault();
-      let orderItems = [];
-      food_list.map((item)=>{
-        if (cartItems[item._id]>0) {
-          let itemInfo = item;
-          itemInfo["quantity"] = cartItems[item._id];
-          orderItems.push(itemInfo);
-        }
-      })     
+      event.preventDefault();   
       let orderData = {
           address: data,
-          items:orderItems,
-          amount:getTotalCartAmount() + 2,
       } 
-      let response = await axios.post(url+"/api/order/place",orderData,{headers:{token}});
-      if (response.data.success) {
-        const {session_url} = response.data;
-        window.location.replace(session_url);
-      }
-      else{
-        alert("Error");
+
+      try {
+        let response = await axios.post(url+"/api/order/place", orderData, { headers:{Authorization:`Bearer ${token}`} });
+        
+        console.log(response.data);
+        
+        if (response.data.success) {
+          const {session_url} = response.data;
+
+          // setCartItems({});
+
+          window.location.replace(session_url);
+        }
+        else{
+          toast.error(response.data.message || "Lỗi đặt hàng");
+          console.log(response.data);
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Error placing order. Please try again.");
       }
     }
 
@@ -58,8 +61,7 @@ const PlaceOrder = () => {
       else if(getTotalCartAmount()===0) {
         navigate('/cart')
       }
-    },[token])
-
+    },[token, getTotalCartAmount, navigate])
 
 
   return (
@@ -94,12 +96,14 @@ const PlaceOrder = () => {
               <hr />
               <div className="cart-total-details">
                 <p>Delivery free</p>
-                <p>${getTotalCartAmount===0?0:2}</p>
+                {/* 3. SỬA LỖI LOGIC: Thêm () */}
+                <p>${getTotalCartAmount() === 0 ? 0 : 2}</p>
               </div>
               <hr />
               <div className="cart-total-details">
                 <b>Total</b>
-                <b>${getTotalCartAmount===0?0:getTotalCartAmount()+2}</b>
+                {/* 3. SỬA LỖI LOGIC: Thêm () */}
+                <b>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}</b>
               </div>
             </div>
               <button type='submit' >PROCEED TO PAYMENT</button>

@@ -3,14 +3,19 @@ import foodModel from "../models/foodModel.js";
 
 const addToCart = async (req,res) =>{
     try { 
+        // 1. Lấy ID người dùng từ req.user (do checkAuth đính vào)
+        const userId = req.user.id; 
+
         const foodItem = await foodModel.findById(req.body.itemId);
         if (!foodItem) {
             return res.json({success:false, message: "Food item not found"});
         }
-        const itemRestaurantId = foodItem.restaurant_id.toString(); // ID nhà hàng của món ăn
+        
+        // SỬA LỖI 2: Dùng 'restaurantId' (camelCase)
+        const itemRestaurantId = foodItem.restaurantId.toString(); 
 
         // 2. Lấy giỏ hàng hiện tại của user
-        let userData = await userModel.findById(req.body.userId);
+        let userData = await userModel.findById(userId); // SỬA LỖI 1
         let cartData = userData.cartData;
         
         // 3. Lấy ID nhà hàng hiện tại trong giỏ
@@ -19,10 +24,10 @@ const addToCart = async (req,res) =>{
         // 4. KIỂM TRA QUAN TRỌNG:
         // Case A: Giỏ hàng trống
         if (currentRestaurantId === null) {
-            cartData.restaurantId = itemRestaurantId; // Gán nhà hàng mới cho giỏ
+            cartData.restaurantId = itemRestaurantId;
             cartData.items[req.body.itemId] = 1;
         }
-        // Case B: Món ăn cùng nhà hàng với giỏ hàng
+        // Case B: Món ăn cùng nhà hàng
         else if (currentRestaurantId === itemRestaurantId) {
             if (!cartData.items[req.body.itemId]) {
                 cartData.items[req.body.itemId] = 1;
@@ -39,7 +44,7 @@ const addToCart = async (req,res) =>{
         }
 
         // 5. Cập nhật lại giỏ hàng
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData });
+        await userModel.findByIdAndUpdate(userId, { cartData }); // SỬA LỖI 1
         res.json({success:true, message:"Added to Cart"});
 
     } catch (error) {
@@ -51,25 +56,23 @@ const addToCart = async (req,res) =>{
 // remove item from user cart
 const removeFromCart = async (req,res) => {
     try {
-        let userData = await userModel.findById(req.body.userId);
+        const userId = req.user.id; // SỬA LỖI 1
+        let userData = await userModel.findById(userId); // SỬA LỖI 1
         let cartData = userData.cartData;
 
-        // Chỉ thao tác trên 'items'
         if (cartData.items[req.body.itemId] > 0) {
             cartData.items[req.body.itemId] -= 1;
             
-            // Nếu giảm về 0, xóa hẳn key đó khỏi object
             if (cartData.items[req.body.itemId] === 0) {
                 delete cartData.items[req.body.itemId];
             }
         }
 
-        // Nếu 'items' rỗng, reset luôn restaurantId
         if (Object.keys(cartData.items).length === 0) {
             cartData.restaurantId = null;
         }
 
-        await userModel.findByIdAndUpdate(req.body.userId, { cartData });
+        await userModel.findByIdAndUpdate(userId, { cartData }); // SỬA LỖI 1
         res.json({success:true, message:"Removed from Cart"});
 
     } catch (error) {
@@ -81,9 +84,16 @@ const removeFromCart = async (req,res) => {
 // fetch user cart data 
 const getCart = async (req,res) => {
     try {
-        let userData = await userModel.findById(req.body.userId);
-        let cartData = await userData.cartData;
-        res.json({success:true, cartData}) // Trả về { restaurantId: "...", items: {...} }
+        const userId = req.user.id; // SỬA LỖI 1
+        let userData = await userModel.findById(userId); // SỬA LỖI 1
+
+        // Thêm kiểm tra null (sửa lỗi 401)
+        if (!userData) {
+            return res.json({success: false, message: "User not found"});
+        }
+
+        let cartData = userData.cartData;
+        res.json({success:true, cartData})
     } catch (error) {
         console.log(error);
         res.json({success:false, message:"Error"})

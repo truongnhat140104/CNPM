@@ -2,15 +2,9 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-    // --- Thêm dòng này ---
-    restaurant_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'restaurant', // Tham chiếu đến restaurantModel
-        required: true
-    },
-    // -------------------
-
+    restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'restaurantProfile',required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true},
+    
     items: { type: Array, required:true},
     amount: { type: Number, required: true},
     address:{type:Object,required:true},
