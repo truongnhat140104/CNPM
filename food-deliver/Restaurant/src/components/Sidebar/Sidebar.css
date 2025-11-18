@@ -1,7 +1,7 @@
 .sidebar {
     width: 100%;
-    min-height: auto ;
-    height: auto;
+    min-height: auto !important;
+    height: auto !important;
     background-color: #fff;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.03);
@@ -54,6 +54,21 @@
     width: 24px;
     height: 24px;
     object-fit: contain;
+}
+
+.two-column-row {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+}
+
+.two-column-row .form-group {
+    flex: 1;
+}
+
+.two-column-row textarea {
+    height: 100%; 
+    min-height: 150px;
 }
 
 @media (max-width: 900px) {

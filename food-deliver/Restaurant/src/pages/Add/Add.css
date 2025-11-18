@@ -1,42 +1,137 @@
-.add {
+.add-container {
     width: 70%;
-    margin-left: max(5vw, 25px);
-    margin-top: 50px;
-    color: #6d6d6d;
+    max-width: 600px;
+    padding: 40px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    min-height: auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center; 
+}
+
+.add-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.add-container .flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-container p {
     font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #555;
 }
 
-.add form {
-    gap: 20px;
+.add-container input[type="text"],
+.add-container input[type="number"],
+.add-container select,
+.add-container textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    width: 100%;
 }
 
-.add-img-upload img{
+.add-container textarea {
+    resize: vertical;
+}
+
+.add-img-upload {
+    align-items: center;
+}
+
+.add-img-upload img {
     width: 120px;
+    height: 120px;
+    /* margin: 10px 0; */
+    cursor: pointer;
+    border: 2px dashed #ccc;
+    border-radius: 50%;
+    object-fit: cover;
+    padding: 5px;
 }
-
-.add-product-name, .add-product-desc {
-    width: max(40%, 280px);
-}
-
-.add-product-name input, .add-product-desc textarea {
-    padding: 10px;
+.add-img-upload label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .add-category-price {
     display: flex;
-    gap: 30px;
+    gap: 20px;
 }
 
-.add-category-price select, .add-category-price input {
-    max-width: 120px;
-    padding: 10px;
+.add-category, .add-price {
+    flex: 1;
+}
+
+.add-category select {
+    height: 44px;
 }
 
 .add-btn {
-  max-width: 120px;
-  border: none;
-  padding: 10px;
-  background-color: black;
-  color: white;
-  cursor: pointer;
+    padding: 12px 20px;
+    background-color: rgb(240, 233, 220);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.add-actions {
+    display: flex;
+    gap: 20px;
+    width: 60%;
+    margin-top: 10px;
+}
+
+.add-actions button {
+    flex: 5;
+    padding: 12px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+.add-btn {
+    background-color: rgb(247, 238, 220);
+    color: rgb(146, 139, 139);
+}
+
+.reset-btn {
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid #ccc;
+    margin-right: 100px;
+}
+
+.reset-btn:hover {
+    background-color: #e0e0e0;
+}
+
+@media (max-width: 600px) {
+    .add-category-price {
+        flex-direction: column;
+        gap: 0;
+    }
 }

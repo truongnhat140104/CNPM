@@ -60,7 +60,7 @@ const List = ({url}) => {
   }
 
   return (
-    <div className='list add flex-col'>
+    <div className='list'> 
       <p>All food</p>
       <div className="list-table">
         <div className="list-table-format title">
@@ -68,19 +68,20 @@ const List = ({url}) => {
           <b>Name</b>
           <b>Category</b>
           <b>Price</b>
-          <b>Action</b>
+          <b>Remove</b> 
+          <b>Edit</b>
         </div>
         {list.map((item,index)=>{
           return (
             <div key = {index} className="list-table-format">
-              <img src={`${url}/images/`+item.image} alt="" />
+              <img src={`${url}/images/`+item.image} alt="" className='img-list-res'/>
               <p>{item.name}</p>
               <p>{item.category}</p>
               <p>${item.price}</p>
-              <p onClick={()=>removeFood(item._id)} className='cursor'>X</p>
+              <p onClick={()=>removeFood(item._id)} className='cursor delete-action'>X</p>
               <p 
                 onClick={() => navigate('/update', { state: { id: item._id } })} 
-                className='cursor'
+                className='cursor edit-action'
               >
                 Edit
               </p>

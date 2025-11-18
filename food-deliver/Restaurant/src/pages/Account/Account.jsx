@@ -118,13 +118,13 @@ const Account = ({ url }) => {
 
     return (
         <div className="account-profile">
-            <h2>{isCreateMode ? "Create Your Restaurant Profile" : "Restaurant Account Profile"}</h2>
+            <h2>{"Profile"}</h2>
             
             <form className="profile-form" onSubmit={onSubmitHandler}>
                 
                 <div className="form-group image-upload">
                     <label htmlFor="image">
-                        <p>Restaurant Image:</p>
+                        <p>Avatar</p>
                         <img 
                             src={imagePreview || assets.upload_area}
                             alt="Profile Preview" 
@@ -138,50 +138,54 @@ const Account = ({ url }) => {
                     />
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="name">Restaurant Name</label>
-                    <input 
-                        onChange={onChangeHandler} 
-                        value={data.name} 
-                        type="text" 
-                        name="name" 
-                        placeholder="Your restaurant's name" 
-                        required
-                    />
+                <div className="two-column-row">
+                    <div className="form-group">
+                        <label htmlFor="name">Restaurant Name</label>
+                        <input 
+                            onChange={onChangeHandler} 
+                            value={data.name} 
+                            type="text" 
+                            name="name" 
+                            placeholder="Your restaurant's name" 
+                            required
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="phone">Phone Number</label>
+                        <input 
+                            onChange={onChangeHandler} 
+                            value={data.phone} 
+                            type="text" 
+                            name="phone" 
+                            placeholder="Contact phone" 
+                        />
+                    </div>
                 </div>
                 
-                <div className="form-group">
-                    <label htmlFor="address">Address</label>
-                    <textarea 
-                        onChange={onChangeHandler} 
-                        value={data.address} 
-                        name="address" 
-                        rows="3"
-                        placeholder="Street, City, Country"
-                        required
-                    ></textarea>
-                </div>
+                <div className="two-column-row">
+                    <div className="form-group">
+                        <label htmlFor="address">Address</label>
+                        <textarea 
+                            onChange={onChangeHandler} 
+                            value={data.address} 
+                            name="address" 
+                            rows="5"
+                            placeholder="Street, City, Country"
+                            required
+                        ></textarea>
+                    </div>
 
-                <div className="form-group">
-                    <label htmlFor="phone">Phone Number</label>
-                    <input 
-                        onChange={onChangeHandler} 
-                        value={data.phone} 
-                        type="text" 
-                        name="phone" 
-                        placeholder="Contact phone" 
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="description">Description</label>
-                    <textarea 
-                        onChange={onChangeHandler} 
-                        value={data.description} 
-                        name="description" 
-                        rows="5"
-                        placeholder="Tell customers about your restaurant"
-                    ></textarea>
+                    <div className="form-group">
+                        <label htmlFor="description">Description</label>
+                        <textarea 
+                            onChange={onChangeHandler} 
+                            value={data.description} 
+                            name="description" 
+                            rows="5"
+                            placeholder="Tell customers about your restaurant"
+                        ></textarea>
+                    </div>
                 </div>
 
                 <button type="submit" className="btn-save">

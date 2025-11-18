@@ -1,5 +1,5 @@
 import add from './icon/add.png'
-import order from './icon/order_icon.png'
+import order from './icon/order.png'
 import upload_area from './icon/upload_area.png'
 import parcel_icon from './icon/parcel_icon.png'
 import logo from './logo/logo.jpeg'

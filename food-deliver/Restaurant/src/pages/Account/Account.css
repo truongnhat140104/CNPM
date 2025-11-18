@@ -1,13 +1,20 @@
-/* File: components/Admin/Account.css */
-
 .account-profile {
     width: 100%;
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 25px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    max-width: 600px;
+    margin: 0; 
+    
+    position: static;
+    top: auto;
+    
+    height: fit-content;
+    padding: 40px;
+    border-radius: 16px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
 }
 
 .account-profile h2 {
@@ -20,6 +27,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-width: 600px;
 }
 
 .form-group {
@@ -40,11 +48,11 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
-    box-sizing: border-box; /* Quan trọng */
+    box-sizing: border-box;
 }
 
 .form-group textarea {
-    resize: vertical; /* Cho phép thay đổi chiều cao */
+    resize: vertical; 
 }
 
 /* Kiểu dáng cho phần upload ảnh */
@@ -56,8 +64,8 @@
 }
 
 .image-upload img {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%; /* Làm cho ảnh preview tròn */
     object-fit: cover;
     border: 2px dashed #ccc;
@@ -73,8 +81,8 @@
 
 .btn-save {
     padding: 12px 20px;
-    background-color: tomato;
-    color: white;
+    background-color: rgb(247, 238, 220);
+    color: rgb(146, 139, 139);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -84,5 +92,5 @@
 }
 
 .btn-save:hover {
-    background-color: #e64a19;
+    background-color: rgb(240, 233, 220);   
 }

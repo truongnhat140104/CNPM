@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import './Add.css'
-import { assets } from '../../assets/assets'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import './Add.css';
+import { assets } from '../../assets/assets';
+import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,12 +15,22 @@ const Add = ({url}) => {
       price:""
     })
 
-    // Lấy token từ localStorage ---
     const token = localStorage.getItem("token");
 
     const onChangeHandler = (e)=>{
       setData({...data,[e.target.name]:e.target.value})
     }
+    
+    const resetForm = () => {
+      setData({
+        name:"",
+        description:"",
+        category:"Main course",
+        price:""
+      });
+      setImage(false);
+      toast.info("Form reset successfully.");
+    };
 
     const onSubmitHandler = async (e) =>{
       e.preventDefault();
@@ -44,13 +54,8 @@ const Add = ({url}) => {
       );
 
       if(response.data.success){
-        setData({
-          name:"",
-          description:"",
-          category:"Main course",
-          price:""
-        });
-        setImage(false);
+        // Gọi hàm reset sau khi submit thành công
+        resetForm(); 
         toast.success(response.data.message);
       }
       else{
@@ -59,7 +64,7 @@ const Add = ({url}) => {
     }
  
   return (
-    <div className='add'>
+    <div className='add-container'>
       <form action="" className='flex-col' onSubmit={onSubmitHandler}>
         <div className="add-img-upload flex-col">
           <p>Upload img</p>
@@ -82,7 +87,7 @@ const Add = ({url}) => {
           <div className="add-category flex-col">
             <p>Product Category</p>
             <select onChange={onChangeHandler} value={data.category} name='category'>
-              <option value="Maincourse">Main course</option>
+              <option value="Main course">Main course</option>
               <option value="Bakery">Bakery</option>
               <option value="Dessert">Dessert</option>
               <option value="Drinks">Drinks </option>
@@ -94,7 +99,11 @@ const Add = ({url}) => {
             <input onChange={onChangeHandler} value={data.price} type="Number" name="price" placeholder='$20' />
           </div>
         </div>
-        <button type="submit" className='add-btn'>ADD</button>
+        
+        <div className='add-actions'>
+            <button type="button" onClick={resetForm} className='reset-btn'>RESET</button>
+            <button type="submit" className='add-btn'>ADD</button>
+        </div>
 
       </form>
     </div>
