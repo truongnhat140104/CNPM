@@ -1,0 +1,116 @@
+.order {
+    width: 70%;
+    margin: 0;
+    padding: 40px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.order h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.order-filter-controls {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 16px;
+    color: #555;
+}
+.order-filter-controls select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: white;
+}
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    font-size: 14px;
+    color: #555;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    gap: 15px;
+}
+
+.order-item img {
+    width: 30px;
+    margin-right: 5px;
+}
+
+.order-item > div {
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.order-item-food {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+.order-item-address p {
+    display: inline;
+    margin-right: 5px;
+}
+.order-item-phone {
+    font-weight: 500;
+}
+
+.order-item > p {
+    white-space: nowrap;
+    margin: 0 10px;
+}
+
+.order-item p:nth-child(4) {
+    font-weight: 600;
+    color: #e64a19;
+}
+
+.order-item select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 160px;
+    font-weight: 500;
+    background-color: #fff;
+}
+
+@media (max-width: 950px) {
+    .order-item {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+    .order-item > p:nth-child(3),
+    .order-item > p:nth-child(4) {
+        order: 4;
+    }
+    .order-item select {
+        order: 5;
+        margin-top: 10px;
+    }
+    .order-item > div {
+        min-width: 250px;
+    }
+}

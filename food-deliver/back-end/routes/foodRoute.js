@@ -1,22 +1,35 @@
 import express from 'express';
-import { addFood, updateFood, listFood, removeFood, getFoodById } from '../controllers/foodController.js';
+import {
+    addFood,
+    listFood,
+    removeFood,
+    updateFood,
+    getFoodById,
+    listFoodByRestaurant,
+    listFoodByMenu,
+    listAllFoodPublic
+} from '../controllers/foodController.js';
+import checkAuth from '../middleware/checkAuth.js';
 import multer from 'multer';
+import checkRole from '../middleware/checkRole.js';
 
 const foodRouter = express.Router();
-
-//img storage engine
 const storage = multer.diskStorage({
     destination: "uploads",
-    filename: (req, file, cb)=>{
-        return cb(null, `${Date.now()}${file.originalname}`);
-    }
-})
-const upload = multer({storage: storage});
+    filename: (req, file, cb) => cb(null, `${Date.now()}${file.originalname}`)
+});
+const upload = multer({ storage });
 
-foodRouter.post('/add', upload.single("image"), addFood);
-foodRouter.get('/list', listFood);
-foodRouter.post('/remove', removeFood);
-foodRouter.post('/update', upload.single("image"),updateFood);
+// Chỉ cho phép nhà hàng (restaurant) thêm, xóa, cập nhật, xem danh sách món ăn
+foodRouter.post('/add', checkAuth, checkRole(['restaurant']), upload.single("image"), addFood);
+foodRouter.post('/remove', checkAuth, checkRole(['restaurant']), removeFood);
+foodRouter.post('/update', checkAuth, checkRole(['restaurant']), upload.single("image"), updateFood);
+foodRouter.get('/list', checkAuth, checkRole(['restaurant']), listFood);
+
+// Cho phép tất cả người dùng đã xác thực xem món ăn theo ID và danh sách món ăn của nhà hàng
 foodRouter.get("/get/:id", getFoodById);
+foodRouter.get("/list/restaurant/:restaurantId", listFoodByRestaurant);
+foodRouter.get("/list/menu/:menuName", listFoodByMenu);
+foodRouter.get("/all", listAllFoodPublic);
 
 export default foodRouter;

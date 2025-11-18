@@ -1,14 +1,30 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from './components/Navbar/Navbar'
 import Sidebar from './components/Sidebar/Sidebar'
-import { Routes, Route } from 'react-router-dom'
-import List from './pages/List/List'
-import Add from './pages/Add/Add'
-import Orders from './pages/Orders/Orders'
-import Update from './pages/Update/Update'
+import { Routes, Route, useNavigate  } from 'react-router-dom'
 import User from './pages/User/User'
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+
+const TokenHandler = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const role = params.get('role');
+
+    if (token && role) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
+
+      navigate('/user'); 
+    }
+  }, [navigate]);
+
+  return null;
+};
 
 const App = () => {
 
@@ -18,16 +34,21 @@ const App = () => {
     <div>
       <ToastContainer/>
       <Navbar />
-      <hr />
-      <div className='app-content'>
-        <Sidebar />
-        <Routes>
-          <Route path="/add" element={<Add url={url}/>} />
-          <Route path="/list" element={<List url={url}/>} />
-          <Route path="/orders" element={<Orders url={url}/>} />
-          <Route path="/update" element={<Update url={url}/>} />
-          <Route path="/user" element={<User url={url}/>} />
-        </Routes>
+      {/* <hr /> */}
+      <div className='app-container'>
+        <div className='main-layout'>
+          <div className="left-column">
+            <Sidebar />
+          </div>
+          <div className='right-content'>
+            <Routes>
+              <Route path="/" element={<TokenHandler />} />
+              <Route path="/user" element={<User url={url}/>} />
+            </Routes>
+          </div>
+
+        </div>
+        
       </div>
     </div>
   )

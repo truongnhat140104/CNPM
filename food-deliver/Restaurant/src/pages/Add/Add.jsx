@@ -1,0 +1,113 @@
+import React, { useEffect, useState } from 'react';
+import './Add.css';
+import { assets } from '../../assets/assets';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
+const Add = ({url}) => {
+
+    const [image,setImage] = useState(false);
+    const [data,setData] = useState({
+      name:"",
+      description:"",
+      category:"Main course",
+      price:""
+    })
+
+    const token = localStorage.getItem("token");
+
+    const onChangeHandler = (e)=>{
+      setData({...data,[e.target.name]:e.target.value})
+    }
+    
+    const resetForm = () => {
+      setData({
+        name:"",
+        description:"",
+        category:"Main course",
+        price:""
+      });
+      setImage(false);
+      toast.info("Form reset successfully.");
+    };
+
+    const onSubmitHandler = async (e) =>{
+      e.preventDefault();
+
+      if (!token) {
+        toast.error("you must be logged in to add food.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image",image);
+      formData.append("name",data.name);
+      formData.append("description",data.description);
+      formData.append("category",data.category);
+      formData.append("price",Number(data.price));
+      
+      const response = await axios.post(
+        `${url}/api/food/add`, 
+        formData, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if(response.data.success){
+        // Gọi hàm reset sau khi submit thành công
+        resetForm(); 
+        toast.success(response.data.message);
+      }
+      else{
+        toast.error(response.data.message);
+      }
+    }
+ 
+  return (
+    <div className='add-container'>
+      <form action="" className='flex-col' onSubmit={onSubmitHandler}>
+        <div className="add-img-upload flex-col">
+          <p>Upload img</p>
+          <label htmlFor="image">
+            <img src={image?URL.createObjectURL(image):assets.upload_area} alt="" />
+          </label>
+          <input onChange={(e)=>setImage(e.target.files[0])} type="file" name="" id="image" hidden required />
+        </div> 
+
+        <div className='add-product-name flex-col'>
+          <p>Product Name</p>
+          <input onChange={onChangeHandler} value={data.name} type="text" name='name' placeholder='Type here' />
+        </div>
+
+        <div className='add-product-desc flex-col'>
+          <p>Product Description</p>
+          <textarea onChange={onChangeHandler} value={data.description} name="description" rows="6" placeholder='Write content here'></textarea>
+        </div>
+        <div className="add-category-price">
+          <div className="add-category flex-col">
+            <p>Product Category</p>
+            <select onChange={onChangeHandler} value={data.category} name='category'>
+              <option value="Main course">Main course</option>
+              <option value="Bakery">Bakery</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Drinks">Drinks </option>
+              <option value="Fastfood">Fast Food</option>
+            </select>
+          </div>
+          <div className="add-price flex-col">
+            <p>Product Price</p>
+            <input onChange={onChangeHandler} value={data.price} type="Number" name="price" placeholder='$20' />
+          </div>
+        </div>
+        
+        <div className='add-actions'>
+            <button type="button" onClick={resetForm} className='reset-btn'>RESET</button>
+            <button type="submit" className='add-btn'>ADD</button>
+        </div>
+
+      </form>
+    </div>
+  )
+}
+
+export default Add

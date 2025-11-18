@@ -1,3 +1,4 @@
+// userModel.js (Cập nhật lại trường cartData)
 import mongoose from "mongoose"
 
 const userSchema = new mongoose.Schema({
@@ -5,7 +6,12 @@ const userSchema = new mongoose.Schema({
     email:{type:String,required:true,unique:true},
     password:{type:String,required:true},
     status:{type:String,default:"active"},
-    cartData:{type:Object,default:{}}
+    role: {type: String, enum: ['user', 'restaurant', 'admin'], default: 'user'},
+    
+    cartData: {
+        type: Object, 
+        default: {}
+    }
 },{minimize:false})
 
 const userModel = mongoose.models.user || mongoose.model("user",userSchema);

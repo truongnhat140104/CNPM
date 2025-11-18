@@ -1,0 +1,92 @@
+.sidebar {
+    width: 100%;
+    min-height: auto !important;
+    height: auto !important;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    border: none;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 130px;
+}
+
+.sidebar-options {
+    padding-left: 0;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-option {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #555;
+    text-decoration: none;
+}
+
+.sidebar-option.active {
+    background-color: #eef2ff;
+    color: #5a67ba;
+    font-weight: 600;
+}
+
+.sidebar-option:not(.active):hover {
+    background-color: #f8f9fa;
+}
+
+.sidebar-logout {
+    margin-top: 30px;
+    padding: 0 15px;
+}
+
+.icon_size {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.two-column-row {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+}
+
+.two-column-row .form-group {
+    flex: 1;
+}
+
+.two-column-row textarea {
+    height: 100%; 
+    min-height: 150px;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 80px;
+        align-items: center;
+    }
+    .sidebar-options, .sidebar-logout {
+        padding-left: 0;
+        align-items: center;
+    }
+    .sidebar-option {
+        justify-content: center;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+    }
+    .sidebar-option p {
+        display: none;
+    }
+}

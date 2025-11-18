@@ -13,21 +13,14 @@ const FoodItem = ({id, name, price, description, image, setShowLogin, setSelecte
             toast.warning("Please select at least one item to add to cart.");
             return; 
         }
-
-        const tasks = [];
-        for (let i = 0; i < localQuantity; i++) {
-            tasks.push(addToCart(id));
-        }
-
         try {
-            await Promise.all(tasks);
+            await addToCart(id, localQuantity);
             toast.success(`Added ${localQuantity} ${name} to cart!`);
         } catch (error) {
             console.error("Failed to add items to cart:", error);
             toast.error("Failed to add items to cart!");
         }
 
-        // 4. Reset số lượng tạm về 1 (theo yêu cầu)
         setLocalQuantity(1);
     };
 

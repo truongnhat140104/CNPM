@@ -1,0 +1,121 @@
+.about-section {
+    padding: 80px 5%;
+    background: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+.about-title h1 {
+    font-size: 4vw;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.about-title img {
+    width: 6vw;
+    height: 6vw;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.about-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.about-left {
+    flex: 1;
+}
+
+.about-left .main-dish-img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.about-grid {
+    flex: 1.5;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
+    border-top: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.about-text {
+    grid-column: 1 / 2;
+    padding-right: 20px;
+}
+
+.about-text span {
+    font-size: 20px;
+    font-weight: bold;
+    color: #555;
+}
+
+.about-text p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+.about-explore {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+}
+
+.explore-btn {
+    background: rgb(240, 233, 220);
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.explore-btn:hover {
+    font-weight: bold;
+}
+
+.about-reviews {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    border-left: 1px solid #ddd;
+    padding-left: 20px;
+}
+
+.about-reviews img {
+    width: 100px;
+}
+
+.about-reviews span {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.about-small-dish {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    border-left: 1px solid #ddd;
+    padding-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-small-dish img {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 50%;
+}

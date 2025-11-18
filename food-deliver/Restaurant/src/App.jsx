@@ -1,34 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react'
+import Navbar from './components/Navbar/Navbar'
+import Sidebar from './components/Sidebar/Sidebar'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import Add from './pages/Add/Add'
+import List from './pages/List/List'
+import Orders from './pages/Orders/Orders'
+import Update from './pages/Update/Update'
+import Account from './pages/Account/Account'
+import Login from './pages/Login/Login'
+
+const App = () => {
+  const url = 'http://localhost:4000'
+  const [isLoggedIn, setIsLoggedIn] = React.useState(localStorage.getItem('token') ? true : false)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="app-container">
+      <ToastContainer />
+      <Routes>
+        {!isLoggedIn && (
+          <Route path="*" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        )}
+
+        {isLoggedIn && (
+          <Route
+            path="/*"
+            element={
+              <>
+                <Navbar setIsLoggedIn={setIsLoggedIn} />
+
+                <div className='main-layout'>
+                  <div className="left-column">
+                    <Sidebar setIsLoggedIn={setIsLoggedIn} />
+                  </div>
+
+                  <div className="right-content">
+                    <Routes>
+                      <Route path="/login" element={<Navigate to='/account' />} />
+                      <Route path="/" element={<Navigate to='/account' />} />
+
+                      <Route path="/add" element={<Add url={url} />} />
+                      <Route path="/list" element={<List url={url} />} />
+                      <Route path="/update" element={<Update url={url} />} />
+                      <Route path="/account" element={<Account url={url} />} />
+                      <Route path="/orders" element={<Orders url={url} />} />
+
+                      <Route path="*" element={<Navigate to="/account" />} />
+                    </Routes>
+                  </div>
+                </div>
+              </>
+            }
+          />
+        )}
+      </Routes>
+    </div>
   )
 }
 

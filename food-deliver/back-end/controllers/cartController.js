@@ -1,55 +1,84 @@
-import userModel from "../models/userModel.js"
+import userModel from "../models/userModel.js";
+import foodModel from "../models/foodModel.js";
 
-// add item to user's cart
-
-const addToCart = async (req,res) =>{
+const addToCart = async (req, res) => {
     try {
-        let userData = await userModel.findById(req.body.userId);
-        let cartData = await userData.cartData;
-        if (!cartData[req.body.itemId]) {
-            cartData[req.body.itemId] = 1
-        }
-        else{
-            cartData[req.body.itemId] += 1
-        }
-        await userModel.findByIdAndUpdate(req.body.userId,{cartData});
-        res.json({success:true,message:"Added to Cart"});
-    } catch (error) {
-        console.log(error);
-        res.json({success:false,message:"Error"});
+        const userId = req.user.id;
+        const { itemId, quantity } = req.body;
+        const addQuantity = quantity ? Number(quantity) : 1;
+
+        const foodItem = await foodModel.findById(itemId);
+        if (!foodItem) return res.json({ success: false, message: "Not found" });
         
-    }
-}
+        const itemRestaurantId = foodItem.restaurantId.toString();
 
-// remove item from user cart
-
-const removeFromCart = async (req,res) => {
-    try {
-        let userData = await userModel.findById(req.body.userId);
-        let cartData = await userData.cartData;
-        if (cartData[req.body.itemId] > 0) {
-            cartData[req.body.itemId] -= 1;
-
+        let userData = await userModel.findById(userId);
+        
+        if (!userData.cartData) userData.cartData = {}; 
+        
+        if (!userData.cartData[itemRestaurantId]) {
+            userData.cartData[itemRestaurantId] = {};
         }
-        await userModel.findByIdAndUpdate(req.body.userId,{cartData});
-        res.json({success:true,message:"Removed from Cart"});
+        if (!userData.cartData[itemRestaurantId][itemId]) {
+            userData.cartData[itemRestaurantId][itemId] = addQuantity;
+        } else {
+            userData.cartData[itemRestaurantId][itemId] += addQuantity;
+        }
+
+        userData.markModified('cartData'); 
+
+        await userData.save();
+
+        res.json({ success: true, message: "Added to Cart" });
+
     } catch (error) {
         console.log(error);
-        res.json({success:false,message:"Error"});
-              
+        res.json({ success: false, message: "Error" });
     }
 }
 
-// fetch user cart data 
-const getCart = async (req,res) => {
+const removeFromCart = async (req, res) => {
     try {
-        let userData = await userModel.findById(req.body.userId);
-        let cartData = await userData.cartData;
-        res.json({success:true,cartData})
+        const userId = req.user.id;
+        let userData = await userModel.findById(userId);
+        let cartData = userData.cartData;
+
+        if (cartData.items[req.body.itemId] > 0) {
+            cartData.items[req.body.itemId] -= 1;
+
+            if (cartData.items[req.body.itemId] === 0) {
+                delete cartData.items[req.body.itemId];
+            }
+        }
+
+        if (Object.keys(cartData.items).length === 0) {
+            cartData.restaurantId = null;
+        }
+
+        await userModel.findByIdAndUpdate(userId, { cartData });
+        res.json({ success: true, message: "Removed from Cart" });
+
     } catch (error) {
         console.log(error);
-        res.json({success:false,message:"Error"})
+        res.json({ success: false, message: "Error" });
     }
 }
 
-export {addToCart,removeFromCart,getCart}
+const getCart = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        let userData = await userModel.findById(userId);
+
+        if (!userData) {
+            return res.json({ success: false, message: "User not found" });
+        }
+
+        let cartData = userData.cartData;
+        res.json({ success: true, cartData })
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error" })
+    }
+}
+
+export { addToCart, removeFromCart, getCart }

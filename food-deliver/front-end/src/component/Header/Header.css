@@ -1,14 +1,38 @@
-.header{
+.header {
     height: 34vw;
-    margin: 30px 150px;
-    background: url('/header_bakery.jpg') no-repeat;
-    background-size: contain;
+    margin: 20px 90px;
     position: relative;
     border-radius: 40px;
     overflow: hidden;
     background-position: center;
     filter: blur(0px);
-    transition: filter 0.4s ease-in-out; 
+    transition: filter 0.4s ease-in-out;
+    background-color: #f0f0f0;
+}
+
+.header-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    image-rendering: -webkit-optimize-contrast;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
+
+}
+
+.header-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
 }
 
 .header-contents {
@@ -26,6 +50,7 @@
     -webkit-backdrop-filter: blur(5px);
     padding: 2vw;
     border-radius: 15px;
+    z-index: 2;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
@@ -36,7 +61,7 @@
     visibility: visible;
 }
 
-button:hover{
+button:hover {
     cursor: pointer;
 }
 
@@ -44,36 +69,117 @@ button:hover{
     font-weight: 600;
     color: black;
     font-size: max(3vw, 18px);
-    /* box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); */
 }
 
-.header-contents button{
+.header-contents button {
     border: none;
     color: #747474;
     font-weight: 500;
     padding: 1vw 2.3vw;
     background-color: white;
     font-size: max(1vw, 13px);
-    border-radius:  50px;
+    border-radius: 50px;
+}
+
+.slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.3s ease;
+}
+
+.prev-arrow {
+    left: 20px;
+}
+
+.next-arrow {
+    right: 20px;
+}
+
+.slider-arrow:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.header:hover .slider-arrow {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 3;
+
+    /* Ẩn đi mặc định */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.slider-dot:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.slider-dot.active {
+    background-color: white;
+    width: 12px;
+    height: 12px;
+}
+
+.header:hover .slider-dots {
+    opacity: 1;
+    visibility: visible;
 }
 
 
 @media (max-width: 1050px) {
-
-    .header-contents{
-       max-width: 45%;
+    .header-contents {
+        max-width: 45%;
     }
 }
-@media (max-width: 750px) {
 
-    .header-contents{
+@media (max-width: 750px) {
+    .header-contents {
         max-width: 65%;
     }
-    .header-contents p{
-      display: none;
+    .header-contents p {
+        display: none;
     }
-    .header-contents button{
+    .header-contents button {
         padding: 2vw 4vw;
     }
-
+    .slider-arrow {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
 }
