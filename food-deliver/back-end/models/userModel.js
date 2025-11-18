@@ -8,12 +8,9 @@ const userSchema = new mongoose.Schema({
     status:{type:String,default:"active"},
     role: {type: String, enum: ['user', 'restaurant', 'admin'], default: 'user'},
     
-    cartData:{
-        type: {
-            restaurantId: { type: mongoose.Schema.Types.ObjectId, ref: 'restaurant' },
-            items: { type: Object, default: {} }
-        },
-        default: { restaurantId: null, items: {} }
+    cartData: {
+        type: Object, 
+        default: {}
     }
 },{minimize:false})
 

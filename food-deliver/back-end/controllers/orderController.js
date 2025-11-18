@@ -1,7 +1,6 @@
-// controllers/orderController.js
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
-import foodModel from "../models/foodModel.js"; // Cần để lấy giá
+import foodModel from "../models/foodModel.js";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -9,31 +8,37 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const placeOrder = async (req,res) => {
     const frontend_url = "http://localhost:5173";
     const userId = req.user.id;
-    const frontendAddress = req.body.address; 
+    const { address: frontendAddress, restaurantId } = req.body;
 
     try {
+        if (!restaurantId){
+            return res.json({success:false,message:"Restaurant ID is required."})
+        }
+
         const userData = await userModel.findById(userId);
         const cartData = userData.cartData;
-        const restaurantId = cartData.restaurantId;
+        const currentRestaurantCart = cartData[restaurantId];
 
-        if (!restaurantId || Object.keys(cartData.items).length === 0) {
-            return res.json({ success: false, message: "Cart is empty." });
+        if (!currentRestaurantCart || Object.keys(currentRestaurantCart).length === 0){
+            return res.json({success:false,message:"No items in cart for this restaurant."})
         }
 
         let totalAmount = 0;
         let lineItemsStripe = [];
         let orderItems = [];
 
-        await Promise.all(Object.keys(cartData.items).map(async (itemId) => {
+        await Promise.all(Object.keys(currentRestaurantCart).map(async (itemId) => {
             const foodItem = await foodModel.findById(itemId);
+            const quantity = currentRestaurantCart[itemId];
+
             if (foodItem) {
-                const itemTotal = foodItem.price * cartData.items[itemId];
+                const itemTotal = foodItem.price * quantity;
                 totalAmount += itemTotal;
                 
                 orderItems.push({
                     name: foodItem.name,
                     price: foodItem.price,
-                    quantity: cartData.items[itemId],
+                    quantity: quantity,
                     image: foodItem.image,
                     foodId: itemId
                 });
@@ -44,18 +49,18 @@ const placeOrder = async (req,res) => {
                         product_data:{ name: foodItem.name },
                         unit_amount: foodItem.price 
                     },
-                    quantity: cartData.items[itemId]
+                    quantity: quantity
                 });
             }
         }));
 
-        const deliveryFee = 5000;
+        const deliveryFee = 2;
         totalAmount += deliveryFee;
         lineItemsStripe.push({
             price_data:{
                 currency:"usd",
                 product_data:{ name:"Delivery Charges" },
-                unit_amount: deliveryFee
+                unit_amount: deliveryFee * 100
             },
             quantity:1
         });
@@ -91,11 +96,20 @@ const verifyOrder = async (req, res) => {
     try {
         if (success === "true") {
             await orderModel.findByIdAndUpdate(orderId, { payment: true });
+            
+            // Lấy thông tin đơn hàng để biết nhà hàng nào và user nào
             const order = await orderModel.findById(orderId);
             if (order) {
-                await userModel.findByIdAndUpdate(order.userId, { 
-                    cartData: { items: {}, restaurantId: null } 
-                });
+                const userData = await userModel.findById(order.userId);
+                
+                // Chỉ xóa đúng cái "rổ" của nhà hàng đã thanh toán
+                if (userData.cartData && userData.cartData[order.restaurantId]) {
+                    delete userData.cartData[order.restaurantId];
+                    
+                    // Báo Mongoose lưu thay đổi Object
+                    userData.markModified('cartData');
+                    await userData.save();
+                }
             }
             res.json({ success: true, message: "Paid" })
         }
@@ -113,7 +127,7 @@ const verifyOrder = async (req, res) => {
 // Hàm userOrders
 const userOrders = async (req, res) => {
     try {
-        const orders = await orderModel.find({userId: req.user.id }); // Dùng req.user.id
+        const orders = await orderModel.find({userId: req.user.id });
         res.json({ success: true, data: orders })
     } catch (error) {
         console.log(error);
@@ -121,7 +135,7 @@ const userOrders = async (req, res) => {
     }
 }
 
-// Hàm listOrders (admin)
+// Hàm listOrders
 const listOrders = async (req,res) => {
     try {
         const orders = await orderModel.find({});
@@ -132,7 +146,7 @@ const listOrders = async (req,res) => {
     }
 }
 
-// Hàm updateStatus (admin)
+// Hàm updateStatus
 const updateStatus = async (req, res) => {
     try {
         await orderModel.findByIdAndUpdate(req.body.orderId, { status: req.body.status });

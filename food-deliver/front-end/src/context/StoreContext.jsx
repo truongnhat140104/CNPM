@@ -1,74 +1,98 @@
 import { createContext, useEffect, useState } from "react";
-import { menu_list } from "../assets/assets"; // Giữ lại menu_list để render các nút
+import { menu_list } from "../assets/assets";
 import axios from "axios";
 export const StoreContext = createContext(null);
 import { toast } from "react-toastify";
 
 const StoreContextProvider = (props) => {
 
-    const url = "http://localhost:4000"
+    const url = "http://localhost:4000";
     const [food_list, setFoodList] = useState([]);
     const [cartItems, setCartItems] = useState({});
-    const [token, setToken] = useState("")
+    const [token, setToken] = useState("");
     const [showLogin, setShowLogin] = useState(false);
     const [role, setRole] = useState(localStorage.getItem("role") || null);
-    
-    // 1. Thêm state 'category' (sửa lỗi 'category is not defined')
     const [category, setCategory] = useState("All");
 
-    const currency = "vnđ";
+    const currency = "$";
     const deliveryCharge = 50;
 
-    // --- CÁC HÀM XỬ LÝ GIỎ HÀNG ---
     const addToCart = async (itemId, quantity = 1) => {
+        const itemInfo = food_list.find((product) => product._id === itemId);
+        if (!itemInfo) return;
+
+        const resId = String(itemInfo.restaurantId);
+
         setCartItems((prev) => {
-            const currentQty = prev[itemId] || 0;
-            return { ...prev, [itemId]: currentQty + quantity };
-        }); 
+            const newCart = { ...prev };
+
+            if (!newCart[resId]) {
+                newCart[resId] = {};
+            }
+
+            newCart[resId][itemId] = (newCart[resId][itemId] || 0) + quantity;
+
+            return newCart;
+        });
+
         if (token) {
             await axios.post(
-            url + "/api/cart/add",
-            { itemId, quantity },
-            { headers: { Authorization: `Bearer ${token}` } }
+                url + "/api/cart/add",
+                { itemId, quantity },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
         }
     };
 
-    const removeFromCart = async (itemId) => {
-        const currentQty = cartItems[itemId];
-        setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+    const removeFromCart = async (itemId, restaurantId) => {
+        setCartItems((prev) => {
+            const newCart = { ...prev };
+
+            if (!newCart[restaurantId] || !newCart[restaurantId][itemId]) return prev;
+
+            newCart[restaurantId][itemId] -= 1;
+
+            if (newCart[restaurantId][itemId] <= 0) {
+                delete newCart[restaurantId][itemId];
+            }
+
+            if (Object.keys(newCart[restaurantId]).length === 0) {
+                delete newCart[restaurantId];
+            }
+
+            return newCart;
+        });
+
         if (token) {
             await axios.post(url + "/api/cart/remove", { itemId }, { headers: { Authorization: `Bearer ${token}` } });
-        }
-        if (currentQty - 1 <= 0) {
-            toast.success("Removed from cart successfully!");
         }
     };
 
     const getTotalCartAmount = () => {
         let totalAmount = 0;
-        for (const item in cartItems) {
-            try {
-              if (cartItems[item] > 0) {
-                let itemInfo = food_list.find((product) => product._id === item);
-                totalAmount += itemInfo.price * cartItems[item];
-            }  
-            } catch (error) {
-                console.log(error);
+        for (const resId in cartItems) {
+            const restaurantCart = cartItems[resId];
+            for (const itemId in restaurantCart) {
+                try {
+                    if (restaurantCart[itemId] > 0) {
+                        let itemInfo = food_list.find((product) => product._id === itemId);
+                        if (itemInfo) {
+                            totalAmount += itemInfo.price * restaurantCart[itemId];
+                        }
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
             }
         }
         return totalAmount;
     }
-    
-    // --- CÁC HÀM TẢI DỮ LIỆU ---
 
-    // 2. Hàm fetchFoodList (sẽ chạy dựa trên state 'category')
     const fetchFoodList = async () => {
         try {
-            // Sửa logic: dùng API public, không cần token
             let endpoint = (category === "All")
-                ? "/api/food/all" // API public lấy tất cả
-                : `/api/food/list/menu/${category}`; // API public theo category
+                ? "/api/food/all"
+                : `/api/food/list/menu/${category}`;
 
             const response = await axios.get(url + endpoint);
             setFoodList(response.data.data);
@@ -78,15 +102,15 @@ const StoreContextProvider = (props) => {
         }
     }
 
-    // Tải giỏ hàng (chỉ chạy khi có token)
     const loadCartData = async (token) => {
-        const response = await axios.post(url + "/api/cart/get", {}, { headers: { Authorization: `Bearer ${token}` } });
-        setCartItems(response.data.cartData);
+        try {
+            const response = await axios.post(url + "/api/cart/get", {}, { headers: { Authorization: `Bearer ${token}` } });
+            setCartItems(response.data.cartData);
+        } catch (error) {
+            console.error("Load cart error", error);
+        }
     }
 
-    // --- EFFECTS ---
-
-    // 3. Tách useEffect: (Chỉ chạy 1 lần để load token/giỏ hàng)
     useEffect(() => {
         async function loadInitialData() {
             if (localStorage.getItem("token")) {
@@ -97,12 +121,10 @@ const StoreContextProvider = (props) => {
         loadInitialData();
     }, [])
 
-    // 4. useEffect (Chạy khi category thay đổi)
     useEffect(() => {
         fetchFoodList();
-    }, [category]); // <-- Tự động fetch lại khi category thay đổi
+    }, [category]);
 
-    // --- CONTEXT VALUE ---
     const contextValue = {
         url,
         food_list,
@@ -121,7 +143,6 @@ const StoreContextProvider = (props) => {
         deliveryCharge,
         showLogin,
         setShowLogin,
-        // 5. Thêm category và setCategory vào context
         category,
         setCategory
     };

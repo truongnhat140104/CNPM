@@ -36,7 +36,7 @@ const Navbar = ({setShowLogin}) => {
                   toast.info("Please sign in to view your cart.");
                   setShowLogin(true);
                 } else {
-                  navigate('/cart'); 
+                  navigate('/yourcart'); 
                 }
               }} 
               src={assets.basket_icon} 

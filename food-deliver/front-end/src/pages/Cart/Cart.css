@@ -13,7 +13,9 @@
     color: black;
 }
 .cart-items-item img {
-    width: 50px;
+    width: 100px;
+    border-radius: 10px;
+    height: max(5vw,70px);
 }
 .cart hr {
     height: 1px;

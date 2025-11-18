@@ -13,7 +13,8 @@ import { ToastContainer } from 'react-toastify'
 import FoodItemDetail from './component/FoodItemDetail/FoodItemDetail'
 // import RegisRes from './pages/RegisRes/RegisRes.jsx'
 import Menu from './pages/Menu/Menu.jsx'
-import FoodDisplay from './component/FoodDisplay/FoodDisplay.jsx'
+
+import YourCart from './pages/YourCart/YourCart.jsx'
 
 const App = () => {
   const [showLogin,setShowLogin] = React.useState(false);
@@ -36,6 +37,7 @@ const App = () => {
         <Route path='/food/:id' element={<FoodItemDetail/>}/> 
         {/* <Route path='/regisRes' element={<RegisRes/>}/>  */}
         <Route path='/menu' element={<Menu setShowLogin={setShowLogin}/>}/>
+        <Route path='/yourcart' element={<YourCart/>}/>
       </Routes>
     </div>
       <Footer/>
