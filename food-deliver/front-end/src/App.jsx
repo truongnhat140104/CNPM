@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from './component/Navbar/Navbar.jsx'
 import { Route, Routes } from 'react-router-dom'
 import Cart from './pages/Cart/Cart'
@@ -9,11 +9,17 @@ import LoginPopup from './component/LoginPopup/LoginPopup'
 import Verify from './pages/Verify/Verify'
 import MyOrders from './pages/MyOrders/MyOrders'
 import { ToastContainer } from 'react-toastify'
+
 import FoodItemDetail from './component/FoodItemDetail/FoodItemDetail'
 // import RegisRes from './pages/RegisRes/RegisRes.jsx'
-  
+import Menu from './pages/Menu/Menu.jsx'
+import FoodDisplay from './component/FoodDisplay/FoodDisplay.jsx'
+
 const App = () => {
   const [showLogin,setShowLogin] = React.useState(false);
+  const [category,setCategory] = useState('All')
+  const [selectedFoodItem, setSelectedFoodItem] = useState(null);
+
   return (
     <>  
     {showLogin?<LoginPopup setShowLogin={setShowLogin}/>:<></>}
@@ -21,13 +27,15 @@ const App = () => {
     <div className='app'>
       <Navbar setShowLogin={setShowLogin}/>
       <Routes>
-        <Route path='/' element={<Home setShowLogin={setShowLogin}/>}/>
+        <Route path='*' element={<Home setShowLogin={setShowLogin}/>}/>
+        <Route path='/home' element={<Home setShowLogin={setShowLogin}/>}/>
         <Route path='/cart' element={<Cart/>}/>
         <Route path='/order' element={<PlaceOrder/>}/>
         <Route path='/verify' element={<Verify/>}/>
         <Route path='/myorders' element={<MyOrders/>}/>
         <Route path='/food/:id' element={<FoodItemDetail/>}/> 
         {/* <Route path='/regisRes' element={<RegisRes/>}/>  */}
+        <Route path='/menu' element={<Menu setShowLogin={setShowLogin}/>}/>
       </Routes>
     </div>
       <Footer/>

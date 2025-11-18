@@ -1,15 +1,15 @@
 .navbar { 
-    padding: 15px 0px;
+    padding: 5px 0px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 }
 .navbar .logo {
-    width: 200px;
-    border-radius: 20px;
+    width: 80px;
+    border-radius: 10px;
     image-rendering: optimizeQuality;
-    filter: brightness(0.95);
+    /* filter: brightness(0.95); */
 }
 
 .navbar-menu {
