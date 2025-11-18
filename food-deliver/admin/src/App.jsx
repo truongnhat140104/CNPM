@@ -11,17 +11,14 @@ const TokenHandler = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 1. Lấy query string từ URL
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     const role = params.get('role');
 
     if (token && role) {
-      // 2. Lưu vào localStorage của 5174
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
 
-      // 3. Xóa token khỏi URL để làm sạch, rồi điều hướng
       navigate('/user'); 
     }
   }, [navigate]);
@@ -37,13 +34,21 @@ const App = () => {
     <div>
       <ToastContainer/>
       <Navbar />
-      <hr />
-      <div className='app-content'>
-        <Sidebar />
-        <Routes>
-          <Route path="/" element={<TokenHandler />} />
-          <Route path="/user" element={<User url={url}/>} />
-        </Routes>
+      {/* <hr /> */}
+      <div className='app-container'>
+        <div className='main-layout'>
+          <div className="left-column">
+            <Sidebar />
+          </div>
+          <div className='right-content'>
+            <Routes>
+              <Route path="/" element={<TokenHandler />} />
+              <Route path="/user" element={<User url={url}/>} />
+            </Routes>
+          </div>
+
+        </div>
+        
       </div>
     </div>
   )

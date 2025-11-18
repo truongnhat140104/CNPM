@@ -9,8 +9,10 @@ import { useEffect } from 'react'
 const Orders = () => {
    const [orders, setOrders] = useState([]);
 
+   const token = localStorage.getItem("token");
+
    const fetchAllOrders = async () => {
-    const response = await axios.get(`${url}/api/order/list`)
+    const response = await axios.get(`${url}/api/order/list`, {headers: { Authorization: `Bearer ${token}` }});
     if (response.data.success) {      
       setOrders(response.data.data.reverse());
     }
@@ -23,7 +25,8 @@ const Orders = () => {
     console.log(event, orderId);
     const response = await axios.post(`${url}/api/order/status`, {
       orderId,
-      status: event.target.value
+      status: event.target.value,
+    }, {headers: { Authorization: `Bearer ${token}` }
     })
     if (response.data.success) {
       await fetchAllOrders();
