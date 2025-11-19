@@ -33,6 +33,7 @@ const addFood = async (req, res) => {
     }
 }
 
+// Restaurant xem danh sách món ăn của mình
 const listFood = async (req, res) => {
     try {
         const restaurantProfile = await restaurantModel.findOne({ restaurant: req.user.id });
@@ -48,6 +49,7 @@ const listFood = async (req, res) => {
     }
 }
 
+// User xóa món ăn của mình trong menu
 const removeFood = async (req, res) => {
     try {
         const restaurantProfile = await restaurantModel.findOne({ restaurant: req.user.id });
@@ -75,6 +77,7 @@ const removeFood = async (req, res) => {
     }
 }
 
+// Restaurant cập nhật món ăn của mình
 const updateFood = async (req, res) => {
     try {
         const restaurantProfile = await restaurantModel.findOne({ restaurant: req.user.id });
@@ -114,6 +117,7 @@ const updateFood = async (req, res) => {
     }
 }
 
+// Lấy món ăn theo ID để cập nhật hoặc hiển thị
 const getFoodById = async (req, res) => {
     try {
         const food = await foodModel.findById(req.params.id);
@@ -129,6 +133,7 @@ const getFoodById = async (req, res) => {
     }
 }
 
+// Tìm kiếm theo nhà hàng
 const listFoodByRestaurant = async (req, res) => {
     try {
         const restaurantId = req.params.restaurantId;
@@ -141,6 +146,7 @@ const listFoodByRestaurant = async (req, res) => {
     }
 }
 
+// Tìm kiếm theo menu (category)
 const listFoodByMenu = async (req, res) => {
     try {
         const menuName = req.params.menuName;
@@ -155,9 +161,20 @@ const listFoodByMenu = async (req, res) => {
 
 const listAllFoodPublic = async (req, res) => {
     try {
-        // Tìm tất cả món ăn
-        const foods = await foodModel.find({}); 
-        res.json({ success: true, data: foods });
+        const foods = await foodModel.find({});
+        
+        const foodsWithData = await Promise.all(foods.map(async (food) => {
+                        
+            const profile = await restaurantModel.findById(food.restaurantId);
+            
+            return {
+                ...food._doc, 
+                restaurantName: profile ? profile.name : "Unknown Restaurant" 
+            };
+        }));
+
+        res.json({ success: true, data: foodsWithData });
+
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: "Server Error" });

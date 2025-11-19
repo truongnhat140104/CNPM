@@ -40,22 +40,33 @@ const addToCart = async (req, res) => {
 const removeFromCart = async (req, res) => {
     try {
         const userId = req.user.id;
+        const { itemId } = req.body; // Lấy itemId từ request
+
+        // 1. Tìm món ăn để lấy ID nhà hàng
+        const foodItem = await foodModel.findById(itemId);
+        if (!foodItem) {
+            return res.json({ success: false, message: "Food item not found" });
+        }
+        const itemRestaurantId = foodItem.restaurantId.toString();
+
+        // 2. Lấy dữ liệu user
         let userData = await userModel.findById(userId);
         let cartData = userData.cartData;
 
-        if (cartData.items[req.body.itemId] > 0) {
-            cartData.items[req.body.itemId] -= 1;
-
-            if (cartData.items[req.body.itemId] === 0) {
-                delete cartData.items[req.body.itemId];
+        // 3. Kiểm tra xem có giỏ hàng của nhà hàng này không
+        if (cartData && cartData[itemRestaurantId]) {
+            
+            // 4. Kiểm tra món ăn có trong giỏ không
+            if (cartData[itemRestaurantId][itemId] > 1) {
+                
+                // Giảm số lượng
+                cartData[itemRestaurantId][itemId] -= 1;
             }
         }
 
-        if (Object.keys(cartData.items).length === 0) {
-            cartData.restaurantId = null;
-        }
+        userData.markModified('cartData');
+        await userData.save();
 
-        await userModel.findByIdAndUpdate(userId, { cartData });
         res.json({ success: true, message: "Removed from Cart" });
 
     } catch (error) {
@@ -72,8 +83,8 @@ const getCart = async (req, res) => {
         if (!userData) {
             return res.json({ success: false, message: "User not found" });
         }
-
-        let cartData = userData.cartData;
+        
+        let cartData = userData.cartData || {};
         res.json({ success: true, cartData })
     } catch (error) {
         console.log(error);
@@ -81,4 +92,40 @@ const getCart = async (req, res) => {
     }
 }
 
-export { addToCart, removeFromCart, getCart }
+const deleteItem = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { itemId } = req.body;
+
+        const foodItem = await foodModel.findById(itemId);
+        if (!foodItem) return res.json({ success: false, message: "Not found" });
+        const itemRestaurantId = foodItem.restaurantId.toString();
+
+        let userData = await userModel.findById(userId);
+
+        // Kiểm tra và xóa hẳn món ăn
+        if (userData.cartData && userData.cartData[itemRestaurantId]) {
+            if (userData.cartData[itemRestaurantId][itemId]) {
+                
+                // LỆNH QUAN TRỌNG: Xóa key món ăn khỏi object
+                delete userData.cartData[itemRestaurantId][itemId]; 
+
+                // Nếu nhà hàng không còn món nào, xóa luôn nhà hàng
+                if (Object.keys(userData.cartData[itemRestaurantId]).length === 0) {
+                    delete userData.cartData[itemRestaurantId];
+                }
+
+                userData.markModified('cartData');
+                await userData.save();
+            }
+        }
+
+        res.json({ success: true, message: "Item Deleted" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error" });
+    }
+}
+
+export { addToCart, removeFromCart, getCart, deleteItem }
