@@ -1,14 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Orders.css'
-import { useState } from 'react'
 import { toast } from 'react-toastify'
 import axios from 'axios'
-import {assets,currency,url} from '../../assets/assets.js'
-import { useEffect } from 'react'
+import { assets, currency, url } from '../../assets/assets.js'
 
 const Orders = () => {
   const [orders, setOrders] = useState([])
-  const [filterStatus, setFilterStatus] = useState('All')
+  const [activeTab, setActiveTab] = useState('requests') 
 
   const token = localStorage.getItem('token')
 
@@ -17,22 +15,27 @@ const Orders = () => {
     if (response.data.success) {
       setOrders(response.data.data.reverse())
     } else {
-      toast.error('Error')
+      toast.error('Error fetching orders')
     }
   }
 
-  const statusHandler = async (event, orderId) => {
-    console.log(event, orderId)
-    const response = await axios.post(
-      `${url}/api/order/status`,
-      {
-        orderId,
-        status: event.target.value
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    if (response.data.success) {
-      await fetchAllOrders()
+  const updateStatus = async (orderId, newStatus) => {
+    try {
+      const response = await axios.post(
+        `${url}/api/order/status`,
+        {
+          orderId,
+          status: newStatus
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      if (response.data.success) {
+        await fetchAllOrders()
+        toast.success(`Order updated to: ${newStatus}`)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error("Error updating status")
     }
   }
 
@@ -40,24 +43,63 @@ const Orders = () => {
     fetchAllOrders()
   }, [])
 
-  const filteredOrders = orders.filter(order => {
-    if (filterStatus === 'All') return true
-    return order.status === filterStatus
-  })
+  const getFilteredOrders = () => {
+    if (activeTab === 'requests') {
+      return orders.filter(order => order.status === 'Food Processing' || order.status === 'Pending')
+    } else if (activeTab === 'kitchen') {
+      return orders.filter(order => 
+        ['Cooking', 'Ready for Pickup', 'Out for delivery'].includes(order.status)
+      )
+    } else if (activeTab === 'delivered') {
+      return orders.filter(order => order.status === 'Delivered')
+    } else if (activeTab === 'rejected') {
+      return orders.filter(order => order.status === 'Rejected')
+    }
+    return [];
+  }
+
+  const filteredOrders = getFilteredOrders();
+
+  // Logic đếm cho các Tab
+  const requestCount = orders.filter(o => o.status === 'Food Processing').length;
+  const kitchenCount = orders.filter(o => 
+    ['Cooking', 'Ready for Pickup', 'Out for delivery'].includes(o.status)
+  ).length;
+  const deliveredCount = orders.filter(o => o.status === 'Delivered').length;
+  const rejectedCount = orders.filter(o => o.status === 'Rejected').length;
+
 
   return (
     <div className='order add'>
-      <h3>Order Page</h3>
+      <h3>Order Management</h3>
 
-      <div className='order-filter-controls'>
-        <label htmlFor='statusFilter'>Filter by Status:</label>
-        <select id='statusFilter' value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-          <option value='All'>Show All Orders</option>
-          <option value='Food Processing'>Food Processing</option>
-          <option value='Out for delivery'>Out for delivery</option>
-          <option value='Delivered'>Delivered</option>
-          <option value='Unlocked'>Unlocked</option>
-        </select>
+      <div className="tabs-container">
+        <button 
+          className={`tab-btn ${activeTab === 'requests' ? 'active' : ''}`} 
+          onClick={() => setActiveTab('requests')}
+        >
+          New Requests ({requestCount})
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'kitchen' ? 'active' : ''}`} 
+          onClick={() => setActiveTab('kitchen')}
+        >
+          Cooking & Drone ({kitchenCount})
+        </button>
+        
+        <button 
+          className={`tab-btn ${activeTab === 'delivered' ? 'active' : ''}`} 
+          onClick={() => setActiveTab('delivered')}
+        >
+          Delivered ({deliveredCount})
+        </button>
+
+        <button
+          className={`tab-btn ${activeTab === 'rejected' ? 'active' : ''}`} 
+          onClick={() => setActiveTab('rejected')}
+        >
+          Rejected ({rejectedCount})
+        </button>
       </div>
 
       <div className='order-list'>
@@ -66,28 +108,91 @@ const Orders = () => {
             <img src={assets.parcel_icon} alt='' />
             <div>
               <p className='order-item-food'>
-                {order.items.map((item, index) => {
-                  if (index === order.items.length - 1) {
+                {order.items.map((item, idx) => {
+                  if (idx === order.items.length - 1) {
                     return item.name + ' x ' + item.quantity
                   } else {
                     return item.name + ' x ' + item.quantity + ', '
                   }
                 })}
               </p>
-              <p className='order-item-name'>{ order.address.name }</p>
+              <p className='order-item-name'>{order.address.name}</p>
               <div className='order-item-address'>
                 <p>{order.address.address}</p>
               </div>
               <p className='order-item-phone'>{order.address.phone}</p>
             </div>
-            <p>Items : {order.items.length}</p>
-            <p>{order.amount}{'.00' + currency}</p>
-            <select onChange={(e) => statusHandler(e, order._id)} value={order.status} name='' id=''>
-              <option value='Food Processing'>Food Processing</option>
-              <option value='Out for delivery'>Out for delivery</option>
-              <option value='Delivered'>Delivered</option>
-              <option value='Unlocked'>Unlocked</option>
-            </select>
+            
+            <div className='order-info-right'>
+                <p>Items: {order.items.length}</p>
+                <p>{order.amount} {currency}</p>
+                
+                <span className={`status-badge ${order.status.replace(/\s+/g, '-').toLowerCase()}`}>
+                    {order.status}
+                </span>
+            </div>
+
+            <div className='order-actions'>
+                
+                {activeTab === 'requests' && (
+                    <div className="action-buttons">
+                        <button 
+                            className="btn-accept" 
+                            onClick={() => updateStatus(order._id, 'Cooking')}
+                        >
+                            Accept Order (Start Cooking)
+                        </button>
+                        <button 
+                            className="btn-reject" 
+                            onClick={() => updateStatus(order._id, 'Rejected')}
+                        >
+                            Reject
+                        </button>
+                    </div>
+                )}
+
+                {activeTab === 'kitchen' && (
+                    <div className="action-buttons">
+                        {order.status === 'Cooking' && (
+                            <button 
+                                className="btn-ready" 
+                                onClick={() => updateStatus(order._id, 'Ready for Pickup')}
+                            >
+                                Food Ready (Call Drone)
+                            </button>
+                        )}
+
+                        {order.status === 'Ready for Pickup' && (
+                            <div className="drone-waiting">
+                                <p>⏳ Waiting for Drone...</p>
+                                <button 
+                                    className="btn-go" 
+                                    onClick={() => updateStatus(order._id, 'Out for delivery')}
+                                >
+                                    Drone Loaded (Go!)
+                                </button>
+                            </div>
+                        )}
+
+                        {order.status === 'Out for delivery' && (
+                             <button 
+                                className="btn-delivered" 
+                                onClick={() => updateStatus(order._id, 'Delivered')}
+                            >
+                                Delivered
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {activeTab === 'delivered' && order.status === 'Delivered' && (
+                    <p className="delivered-text">Successfully Delivered</p>
+                )}
+                
+                {activeTab === 'rejected' && order.status === 'Rejected' && (
+                    <p className="rejected-text">Order was rejected.</p>
+                )}
+            </div>
           </div>
         ))}
       </div>
