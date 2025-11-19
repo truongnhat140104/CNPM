@@ -4,7 +4,7 @@ import { StoreContext } from '../../context/StoreContext';
 import { useNavigate } from 'react-router-dom';
 
 const YourCart = () => {
-  const { cartItems, food_list, url, currency, removeFromCart } = useContext(StoreContext);
+  const { cartItems, food_list, url, currency, removeFromCart, addToCart, deleteItemFromCart } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const restaurantIds = Object.keys(cartItems);
@@ -14,7 +14,7 @@ const YourCart = () => {
       const firstFoodId = Object.keys(restaurantCart)[0];
       const foodItem = food_list.find((item) => item._id === firstFoodId);
       // Hiển thị tên nhà hàng hoặc ID nếu không tìm thấy tên
-      return foodItem?.restaurantName || (foodItem?.restaurantId ? `Restaurant ID: ${foodItem.restaurantId}` : "Unknown Restaurant");
+      return foodItem?.restaurantName || "Unknown Restaurant";
     } catch (error) {
       return "Restaurant";
     }
@@ -77,10 +77,21 @@ const YourCart = () => {
                             <img src={url + "/images/" + item.image} alt={item.name} className='cart-item-image' />
                             <p className='cart-item-name'>{item.name}</p>
                             <p className='cart-item-price'>{item.price.toFixed(2)} {currency}</p>
+
+                            <div className='quantity-control'>
+                                {/* Nút Giảm (-) gọi removeFromCart */}
+                                <button onClick={() => removeFromCart(item._id, resId)}>-</button>
+                                
+                                <span>{quantity}</span>
+                                
+                                {/* Nút Tăng (+) gọi addToCart */}
+                                <button onClick={() => addToCart(item._id)}>+</button>
+                            </div>
+
                             <p className='cart-item-quantity'>x {quantity}</p>
                             <p className='cart-item-total'>{itemTotal.toFixed(2)} {currency}</p>
                             <p 
-                              onClick={() => removeFromCart(item._id, resId)} 
+                              onClick={() => deleteItemFromCart(item._id, resId)} 
                               className='cart-item-remove'>x</p>
                         </div>
                     ))}

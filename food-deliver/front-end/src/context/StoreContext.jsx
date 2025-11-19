@@ -50,14 +50,8 @@ const StoreContextProvider = (props) => {
 
             if (!newCart[restaurantId] || !newCart[restaurantId][itemId]) return prev;
 
-            newCart[restaurantId][itemId] -= 1;
-
-            if (newCart[restaurantId][itemId] <= 0) {
-                delete newCart[restaurantId][itemId];
-            }
-
-            if (Object.keys(newCart[restaurantId]).length === 0) {
-                delete newCart[restaurantId];
+            if (newCart[restaurantId][itemId] > 1) {
+                newCart[restaurantId][itemId] -= 1;
             }
 
             return newCart;
@@ -65,6 +59,28 @@ const StoreContextProvider = (props) => {
 
         if (token) {
             await axios.post(url + "/api/cart/remove", { itemId }, { headers: { Authorization: `Bearer ${token}` } });
+        }
+    };
+
+    const deleteItemFromCart = async (itemId, restaurantId) => {
+        setCartItems((prev) => {
+            const newCart = { ...prev };
+            
+            if (newCart[restaurantId]) {
+                // Xóa hẳn món ăn khỏi state
+                delete newCart[restaurantId][itemId];
+
+                // Nếu rỗng thì xóa nhà hàng khỏi state
+                if (Object.keys(newCart[restaurantId]).length === 0) {
+                    delete newCart[restaurantId];
+                }
+            }
+            return newCart;
+        });
+
+        if (token) {
+            // Gọi API delete mới tạo
+            await axios.post(url + "/api/cart/delete", { itemId }, { headers: { Authorization: `Bearer ${token}` } });
         }
     };
 
@@ -144,7 +160,8 @@ const StoreContextProvider = (props) => {
         showLogin,
         setShowLogin,
         category,
-        setCategory
+        setCategory,
+        deleteItemFromCart,
     };
 
     return (

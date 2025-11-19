@@ -22,6 +22,19 @@
 .food-item-name-rating p {
     font-size: 20px;
     font-weight: 500;
+    margin-bottom: 5px; /* Thêm khoảng cách dưới tên món */
+}
+
+/* --- THÊM CSS CHO TÊN NHÀ HÀNG --- */
+.food-item-restaurant {
+    font-size: 14px !important; /* Ghi đè size 20px ở trên */
+    color: #444;
+    font-weight: 600 !important;
+    margin-top: 0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .food-item-name-rating img {
@@ -89,4 +102,24 @@
 .add-cart-btn:hover {
     transform: scale(1.03); 
     font-weight: 300;
+}
+
+.food-item-restaurant {
+    font-size: 18px !important;
+    color: #333; 
+    font-weight: 700 !important;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+    color: rgb(215, 160, 73);
+}
+
+.food-item-restaurant-icon {
+    width: 35px !important;
+    height: 35px; 
+    object-fit: contain;
+    display: block; 
 }

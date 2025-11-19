@@ -4,7 +4,7 @@ import { assets } from '../../assets/assets'
 import { StoreContext } from '../../context/StoreContext'
 import { toast } from 'react-toastify';
 
-const FoodItem = ({id, name, price, description, image, setShowLogin, setSelectedFoodItem, item}) => {
+const FoodItem = ({id, name, price, description, image, setShowLogin, setSelectedFoodItem, item, restaurantName}) => {
     const { addToCart, url, token} = useContext(StoreContext);
     const [localQuantity, setLocalQuantity] = useState(1);
 
@@ -31,6 +31,7 @@ const FoodItem = ({id, name, price, description, image, setShowLogin, setSelecte
             </div>
             <div className="food-item-info">
                 <div className="food-item-name-rating">
+                    <p className="food-item-restaurant"><img src={assets.restaurant} alt="restaurant icon" className='food-item-restaurant-icon'/> {restaurantName}</p>
                     <p>{name}</p>
                 </div>
                 <p className="food-item-desc">{description}</p>

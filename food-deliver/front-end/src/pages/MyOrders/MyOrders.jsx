@@ -7,6 +7,8 @@ import { assets } from '../../assets/assets';
 const MyOrders = () => {
   
   const [data,setData] =  useState([]);
+  const [filterStatus, setFilterStatus] = useState("All"); // ⬅️ THÊM STATE LỌC
+  
   const {url,token,currency} = useContext(StoreContext);
 
   const fetchOrders = async () => {
@@ -20,11 +22,35 @@ const MyOrders = () => {
     }
   },[token])
 
+  const filteredOrders = data.filter(order => {
+    if (filterStatus === "All") return true;
+    return order.status === filterStatus;
+  });
+
   return (
     <div className='my-orders'>
-      <h2>My Orders</h2>
+      <div className="my-orders-header">
+          <h2>My Orders</h2>
+            <div className='my-orders-filter-controls'>
+              <label htmlFor="statusFilter">Filter by Status:</label>
+              <select 
+                  id="statusFilter"
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                  <option value="All">Show All Orders</option>
+                  <option value="Food Processing">Food Processing</option>
+                  <option value="Out for delivery">Out for delivery</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Unlocked">Unlocked</option>
+              </select>
+          </div>
+      </div>
+      {/* ------------------------------- */}
+      
       <div className="container">
-        {data.map((order,index)=>{
+        {/* DUYỆT QUA DANH SÁCH ĐÃ LỌC */}
+        {filteredOrders.map((order,index)=>{
           return (
             <div key={index} className='my-orders-order'>
                 <img src={assets.parcel_icon} alt="" />

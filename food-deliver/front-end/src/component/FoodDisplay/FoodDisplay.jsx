@@ -21,6 +21,7 @@ const FoodDisplay = ({category, setShowLogin, setSelectedFoodItem}) => {
                           setShowLogin={setShowLogin}
                           setSelectedFoodItem={setSelectedFoodItem}
                           item={item}
+                          restaurantName={item.restaurantName}
                        /> 
               }
               

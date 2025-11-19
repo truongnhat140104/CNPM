@@ -47,7 +47,6 @@ const Cart = () => {
           <p>Price</p>
           <p>Quantity</p>
           <p>Total</p>
-          <p>Remove</p>
         </div>
       </div>
       <br />
@@ -65,8 +64,6 @@ const Cart = () => {
                 <p>${item.price}</p>
                 <p>{currentRestaurantCart[item._id]}</p>
                 <p>${(item.price * currentRestaurantCart[item._id]).toFixed(2)}</p>
-                <p onClick={() => removeFromCart(item._id, restaurantId)} className='cross'>x</p>
-              
               </div>
               <hr />
             </div>
