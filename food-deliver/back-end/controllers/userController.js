@@ -1,4 +1,5 @@
 import userModel from "../models/userModel.js";
+import restaurantProfileModel from "../models/restaurantProfile.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
@@ -8,7 +9,7 @@ const createToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET)
 }
 
-// login user (Đã cập nhật)
+// login user
 const loginUser = async (req,res) => {
     const {email,password} = req.body;
     try {
@@ -40,6 +41,7 @@ const loginUser = async (req,res) => {
     }
 }
 
+// register user (res and customer)
 const registerUser = async (req, res) => {
     const { name, password, email, role } = req.body;
     
@@ -85,7 +87,7 @@ const registerUser = async (req, res) => {
     }
 }
 
-
+// remove user (admin)
 const removeUser = async (req, res) => {
     const { id } = req.body;
     try {
@@ -101,6 +103,7 @@ const removeUser = async (req, res) => {
     }
 }
 
+// list users (admin)
 const listUsers = async (req, res) => {
     const role = req.query.role;
     try {
@@ -112,6 +115,7 @@ const listUsers = async (req, res) => {
     }   
 }
 
+// update user status (admin)
 const updateUserStatus = async (req, res) => {
     const { userId, status } = req.body;
     try {
@@ -128,4 +132,67 @@ const updateUserStatus = async (req, res) => {
     }
 }
 
-export {loginUser,registerUser, removeUser, listUsers, updateUserStatus}
+//admin register restaurant
+const registerRestaurant = async (req, res) => {
+    try {
+        // Lấy dữ liệu từ FormData gửi lên
+        const { 
+            ownerName, email, password, // Thông tin User
+            name, address, phone, description // Thông tin Profile quán
+        } = req.body;
+
+        const image_filename = req.file ? req.file.filename : "default.png";
+
+        // 1. Kiểm tra xem email đã tồn tại chưa
+        const exists = await userModel.findOne({ email });
+        if (exists) {
+            return res.json({ success: false, message: "Email đã tồn tại" });
+        }
+
+        // 2. Validate định dạng
+        if (!validator.isEmail(email)) {
+            return res.json({ success: false, message: "Email không hợp lệ" });
+        }
+        if (password.length < 6) {
+            return res.json({ success: false, message: "Mật khẩu phải trên 6 ký tự" });
+        }
+
+        // 3. Mã hóa mật khẩu
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // 4. TẠO USER (Role = 'restaurant')
+        const newUser = new userModel({
+            name: ownerName, // Tên chủ quán
+            email: email,
+            password: hashedPassword,
+            role: "restaurant", // <-- Quan trọng
+            status: "active"
+        });
+
+        const savedUser = await newUser.save();
+
+        // 5. TẠO PROFILE NHÀ HÀNG (Liên kết với User vừa tạo)
+        const newProfile = new restaurantProfileModel({
+            restaurant: savedUser._id, // Lấy ID của user trên
+            name: name, // Tên quán ăn
+            address: address,
+            phone: phone,
+            description: description,
+            image: image_filename
+        });
+
+        await newProfile.save();
+
+        // Tạo token để tự động đăng nhập luôn nếu muốn (hoặc chỉ trả về success)
+        const token = createToken(savedUser._id, savedUser.role);
+
+        res.json({ success: true, token, message: "Đăng ký nhà hàng thành công!" });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Lỗi server" });
+    }
+}
+
+export {loginUser,registerUser, removeUser, listUsers, updateUserStatus, registerRestaurant}

@@ -1,6 +1,7 @@
 import resModel from "../models/restaurantProfile.js";
 import foodModel from "../models/foodModel.js";
 
+//Admin
 const getAllRestaurants = async (req, res) => {
     try {
         const restaurants = await resModel.find({});
@@ -11,6 +12,7 @@ const getAllRestaurants = async (req, res) => {
     }
 };
 
+//Restaurant Details Page
 const getRestaurantById = async (req, res) => {
     const { id } = req.params;
     try {
@@ -25,6 +27,7 @@ const getRestaurantById = async (req, res) => {
     }
 };
 
+
 const getFoodsByRestaurantId = async (req, res) => {
     const { id } = req.params;
     try {
@@ -36,6 +39,7 @@ const getFoodsByRestaurantId = async (req, res) => {
     }
 };
 
+//Restaurant Profile Management
 const getMyRestaurantProfile = async (req, res) => {
     try {
         const profile = await resModel.findOne({ restaurant: req.user.id });
@@ -50,6 +54,7 @@ const getMyRestaurantProfile = async (req, res) => {
     }
 };
 
+// Res Create Restaurant Profile
 const createRestaurantProfile = async (req, res) => {
     const userId = req.user.id; 
 
@@ -73,6 +78,7 @@ const createRestaurantProfile = async (req, res) => {
     }
 };
 
+// Update Restaurant Profile
 const updateRestaurantProfile = async (req, res) => {
     const userId = req.user.id; 
 
@@ -99,6 +105,7 @@ const updateRestaurantProfile = async (req, res) => {
     }
 };
 
+//Admin Delete Restaurant Profile
 const deleteMyRestaurant = async (req, res) => {
     const userId = req.user.id; 
 

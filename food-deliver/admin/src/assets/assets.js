@@ -3,6 +3,7 @@ import user from './icon/user.png'
 import logout from './icon/logout.png'
 import restaurant from './icon/restaurant.png'
 import logo from './logo/logo.jpeg'
+import upload from './icon/upload_area.png'
 
 export const currency = '$'
 export const assets ={
@@ -10,7 +11,8 @@ export const assets ={
     logo,
     user,
     logout,
-    restaurant
+    restaurant,
+    upload_area: upload
 }
 
 export const url = 'http://localhost:4000'

@@ -5,7 +5,7 @@
     background-color: white;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    min-height: 80vh;
+    min-height: auto;
     display: flex;
     flex-direction: column;
     gap: 30px;

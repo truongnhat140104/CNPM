@@ -3,6 +3,7 @@ import Navbar from './components/Navbar/Navbar'
 import Sidebar from './components/Sidebar/Sidebar'
 import { Routes, Route, useNavigate  } from 'react-router-dom'
 import User from './pages/User/User'
+import AddingRes from './pages/AddingRes/AddingRes'
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
@@ -44,6 +45,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<TokenHandler />} />
               <Route path="/user" element={<User url={url}/>} />
+              <Route path="/addingres" element={<AddingRes url={url}/>} />
             </Routes>
           </div>
 

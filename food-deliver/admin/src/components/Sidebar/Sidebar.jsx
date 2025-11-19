@@ -11,7 +11,7 @@ const Sidebar = () => {
                 <img src={assets.user} alt="" className='icon_size'/>
                 <p>User</p>
             </NavLink>
-            <NavLink to='/restaurant' className="sidebar-option">
+            <NavLink to='/addingres' className="sidebar-option">
                 <img src={assets.add} alt="" className='icon_size'/>
                 <p>Restaurant</p>
             </NavLink>
