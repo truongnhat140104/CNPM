@@ -1,21 +1,20 @@
 /* MyOrders.css */
 
+/* --- LOGIC CĂN GIỮA MỚI (CHỈ ÁP DỤNG TRÊN THẺ NÀY) --- */
 .my-orders {
-    /* --- LOGIC CĂN GIỮA MỚI (CHỈ ÁP DỤNG TRÊN THẺ NÀY) --- */
-    max-width: 800px; /* Giới hạn độ rộng tối đa */
-    margin: 50px auto; /* Căn giữa khối nội dung theo chiều ngang */
-    padding: 0 20px; /* Khoảng cách lề trong (quan trọng cho responsive) */
-    
-    min-height: calc(100vh - 400px); /* Chiều cao tối thiểu */
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 0 20px; 
+    min-height: calc(100vh - 400px);
 }
 
 /* --- Style cho Header và Filter --- */
 .my-orders-header {
+    /* ⬅️ ĐÃ CHỈNH SỬA: Xếp chồng tiêu đề và tab */
     display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    margin-bottom: 30px; 
-    /* Đã xóa margin/max-width/padding cũ vì nó được xử lý ở thẻ cha .my-orders */
+    flex-direction: column; 
+    align-items: flex-start; /* Căn trái tiêu đề */
+    margin-bottom: 20px; /* Điều chỉnh lại margin */
 }
 
 .my-orders h2 {
@@ -23,36 +22,64 @@
     font-weight: 600;
     margin: 0; 
     color: #333;
+    margin-bottom: 10px; /* Tạo khoảng cách với thanh tab */
 }
 
-/* Style cho container chứa List Order */
-.my-orders .container {
+/* ----------------------------------------------------- */
+/* --- CSS THÊM MỚI: KHUNG CHỨA VÀ NÚT TAB --- */
+/* ----------------------------------------------------- */
+
+.my-orders-tabs-container {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    /* KHÔNG CẦN max-width và margin: 0 auto nữa vì thẻ cha đã lo */
-    margin: 0;
-    padding: 0;
+    gap: 10px; /* Khoảng cách giữa các tab */
+    padding-bottom: 5px;
+    border-bottom: 2px solid #f0f0f0; /* Đường kẻ dưới thanh tab */
+    width: 100%; /* Đảm bảo nó rộng bằng container */
 }
 
-/* --- Style Bộ Lọc --- */
-.my-orders-filter-controls {
-    margin: 0; 
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.my-orders-filter-controls select {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
+.my-orders-tabs-container .tab-btn {
+    padding: 8px 15px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
     cursor: pointer;
-    background-color: white;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 3px solid transparent; /* Tạo không gian cho highlight */
+    transition: 0.2s;
+    margin-bottom: -2px; /* Dịch lên để border-bottom của tab trùng với border của container */
 }
+
+.my-orders-tabs-container .tab-btn.active {
+    color: tomato;
+    font-weight: 600;
+    border-bottom: 3px solid tomato; /* Highlight màu cam khi active */
+    background-color: white; /* Đảm bảo nền tab active nổi bật */
+}
+
+.my-orders-tabs-container .tab-btn:hover:not(.active) {
+    color: #333;
+    background-color: #f7f7f7;
+}
+
+/* --- Style Bộ Lọc (Đã bỏ selector select vì giờ là nút) --- */
+.my-orders-filter-controls {
+    /* Class này không còn sử dụng trong cấu trúc tab mới */
+    display: none; 
+}
+
 
 /* --- Style cho MỖI ĐƠN HÀNG (Order Item Card) --- */
+.my-orders .container {
+    /* Đảm bảo list order bắt đầu ngay dưới thanh tab */
+    margin: 0;
+    padding: 0; 
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
 .my-orders-order {
     display: grid;
     grid-template-columns: 0.5fr 3fr 1fr 1fr 1.5fr 1fr;
@@ -64,11 +91,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     font-size: 14px;
     color: #555;
-    /* Width được thừa hưởng từ thẻ cha (800px) */
 }
 
 /* ... (Giữ nguyên các style chi tiết khác) ... */
-
 .my-orders-order:hover {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     transition: 0.3s;

@@ -120,7 +120,7 @@
 .status-badge.food-processing { background-color: #fde09e; color: #a06e00; }
 .status-badge.cooking { background-color: #cfe2ff; color: #00377c; }
 .status-badge.ready-for-pickup { background-color: #d1e7dd; color: #0f5132; }
-.status-badge.out-for-delivery { background-color: #e0e0e0; color: #444; }
+.status-badge.delivering { background-color: #fce5cd; color: #cc6600; }
 
 .order-actions {
     display: flex;
@@ -169,26 +169,59 @@
     margin: 0;
 }
 
-.delivering-text {
-    color: #0d6efd;
+
+.status-badge.rejected { 
+    background-color: #f8d7da; 
+    color: #721c24; 
+}
+
+.rejected-text {
     font-weight: bold;
+    color: #dc3545; 
     text-align: right;
     width: 100%;
     padding: 10px;
+}
+
+.status-badge.ready-for-pickup { background-color: #d1e7dd; color: #155724; }
+.status-badge.out-for-delivery { 
+    /* Màu cho trạng thái ĐANG GIAO (Delivering) */
+    background-color: #fce5cd; 
+    color: #cc6600; /* Màu cam đậm */
+}
+
+/* ⬅️ THÊM MÀU CHO TRẠNG THÁI ĐÃ GIAO (Delivered) */
+.status-badge.delivered { 
+    background-color: #cce5ff; /* Màu xanh da trời nhạt */
+    color: #004085;
 }
 
 .status-badge.rejected { 
-    background-color: #f8d7da; /* Màu nền đỏ nhạt */
-    color: #721c24; /* Màu chữ đỏ sẫm */
+    background-color: #f8d7da; 
+    color: #721c24; 
 }
 
-/* Style cho text khi ở tab Rejected */
-.rejected-text {
-    font-weight: bold;
-    color: #dc3545; /* Màu đỏ */
-    text-align: right;
+.delivered-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #004085; /* Màu xanh lá (Thành công) */
     width: 100%;
+    text-align: right;
     padding: 10px;
+    margin: 0; /* Đảm bảo không có margin thừa */
+}
+
+/* Style cho wrapper của text Đang giao (Delivering) */
+.delivering-text {
+    display: flex;
+    justify-content: flex-end; /* Đẩy nội dung sang phải */
+    align-items: center;
+    width: 100%;
+}
+
+/* Tùy chỉnh màu cho text ĐANG GIAO */
+.delivering-text .delivered-text {
+    color: #721c24; /* Màu xanh nước biển nhạt (Đang tiến hành) */
 }
 
 @media (max-width: 768px) {
