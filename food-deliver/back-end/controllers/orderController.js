@@ -2,6 +2,7 @@ import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import foodModel from "../models/foodModel.js";
 import droneModel from "../models/droneModel.js";
+import restaurantProfileModel from "../models/restaurantProfile.js";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -182,4 +183,27 @@ const updateStatus = async (req, res) => {
     }
 }
 
-export {placeOrder,verifyOrder,userOrders,listOrders,updateStatus}
+// Hàm listRestaurantOrders lấy danh sách đơn hàng cho nhà hàng dựa trên restaurantId
+const listRestaurantOrders = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // 1. Tìm Profile nhà hàng dựa trên User ID
+        const profile = await restaurantProfileModel.findOne({ restaurant: userId });
+        
+        if (!profile) {
+            return res.json({ success: false, message: "Không tìm thấy hồ sơ nhà hàng" });
+        }
+
+        // 2. Tìm các đơn hàng có restaurantId trùng với ID của Profile này
+        const orders = await orderModel.find({ restaurantId: profile._id });
+
+        res.json({ success: true, data: orders });
+
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Lỗi khi lấy danh sách đơn hàng" });
+    }
+}
+
+export {placeOrder,verifyOrder,userOrders,listOrders,updateStatus, listRestaurantOrders};

@@ -169,9 +169,7 @@ const updateDeliveryStep = async (req, res) => {
         } 
         // 2. Drone đã giao cho khách -> Bắt đầu quay về
         else if (action === 'delivered') {
-            // Tạm thời set status order là 'Returning' để nó hiện ở Tab Returning
-            // (Khách hàng vẫn có thể thấy là Delivered, hoặc Returning tùy bạn xử lý hiển thị)
-            order.status = "Returning"; 
+            order.status = "Delivered"; 
             drone.status = "Returning";
             drone.battery -= 10; // Trừ pin giả lập
         } 

@@ -11,10 +11,8 @@ const Orders = () => {
   const token = localStorage.getItem('token')
 
   const fetchOrders = async () => {
-    // ⬅️ ĐÃ SỬA: SỬ DỤNG AXIOS.POST VÀ BODY RỖNG ĐỂ ĐỒNG BỘ VỚI CLIENT
-    // Giả định Backend /api/order/list xử lý POST/token để lọc theo Restaurant ID
     const response = await axios.post(
-        `${url}/api/order/list`, 
+        `${url}/api/order/restaurantorders`, 
         {}, // Gửi body rỗng
         { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -25,8 +23,6 @@ const Orders = () => {
       toast.error('Error fetching orders')
     }
   }
-
-  // ... (các hàm updateStatus, useEffect, logic lọc, và phần return JSX giữ nguyên) ...
 
   const updateStatus = async (orderId, newStatus) => {
     try {
