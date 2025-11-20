@@ -30,7 +30,7 @@ const MyOrders = () => {
             return ['Food Processing', 'Pending'].includes(order.status);
         case "prepare-for-delivery":
             // Ready for Pickup (Đã nấu xong)
-            return order.status === 'Ready for Pickup';
+            return ['Ready for Pickup', 'Cooking'].includes(order.status);
         case "Delivering":
             return order.status === 'Delivering';
         case "delivered":
@@ -48,7 +48,7 @@ const MyOrders = () => {
         case "processing":
             return data.filter(o => ['Food Processing', 'Pending'].includes(o.status)).length;
         case "prepare-for-delivery":
-            return data.filter(o => o.status === 'Ready for Pickup').length;
+            return data.filter(o => ['Ready for Pickup', 'Cooking'].includes(o.status)).length;
         case "Delivering":
             return data.filter(o => o.status === 'Delivering').length;
         case "delivered":
