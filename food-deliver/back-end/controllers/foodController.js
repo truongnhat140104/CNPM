@@ -10,10 +10,8 @@ const addFood = async (req, res) => {
         const restaurantProfile = await restaurantModel.findOne({ restaurant: userId });
 
         if (!restaurantProfile) {
-            return res.json({ success: false, message: "Restaurant profile not found for this user." });
+            return res.json({ success: false, message: "Please create a restaurant profile before adding food." });
         }
-
-        const restaurantId = restaurantProfile._id;
 
         const food = new foodModel({
             name: req.body.name,
@@ -21,79 +19,76 @@ const addFood = async (req, res) => {
             price: req.body.price,
             category: req.body.category,
             image: req.file.filename,
-            restaurantId: restaurantId
+            restaurantId: restaurantProfile._id // Lưu ID của Profile
         });
 
         await food.save();
         res.json({ success: true, message: "Food item added" });
 
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
+        console.log(error);
+        res.json({ success: false, message: "Error adding food" });
     }
 }
 
-// Restaurant xem danh sách món ăn của mình
+// 2. Restaurant xem danh sách món của mình
 const listFood = async (req, res) => {
     try {
         const restaurantProfile = await restaurantModel.findOne({ restaurant: req.user.id });
         if (!restaurantProfile) {
-            return res.json({ success: false, message: "Restaurant profile not found" });
+            return res.json({ success: false, message: "Profile not found" });
         }
 
         const foods = await foodModel.find({ restaurantId: restaurantProfile._id });
         res.json({ success: true, data: foods });
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
+        console.log(error);
+        res.json({ success: false, message: "Error listing food" });
     }
 }
 
-// User xóa món ăn của mình trong menu
+// 3. Xóa món ăn
 const removeFood = async (req, res) => {
     try {
         const restaurantProfile = await restaurantModel.findOne({ restaurant: req.user.id });
         if (!restaurantProfile) {
-            return res.json({ success: false, message: "Restaurant profile not found" });
+            return res.json({ success: false, message: "Profile not found" });
         }
 
         const food = await foodModel.findById(req.body.id);
         if (!food) {
-            return res.json({ success: false, message: "Food item not found" });
+            return res.json({ success: false, message: "Food not found" });
         }
 
+        // Kiểm tra quyền sở hữu
         if (food.restaurantId.toString() !== restaurantProfile._id.toString()) {
-            return res.json({ success: false, message: "Authorization Failed: This is not your food." });
+            return res.json({ success: false, message: "Unauthorized action" });
         }
 
+        // Xóa ảnh và xóa data
         fs.unlink(path.join('uploads', food.image), () => {});
-
         await foodModel.findByIdAndDelete(req.body.id);
-        res.json({ success: true, message: "Food item removed" });
+        
+        res.json({ success: true, message: "Food removed" });
 
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
+        console.log(error);
+        res.json({ success: false, message: "Error removing food" });
     }
 }
 
-// Restaurant cập nhật món ăn của mình
+// 4. Cập nhật món ăn
 const updateFood = async (req, res) => {
     try {
         const restaurantProfile = await restaurantModel.findOne({ restaurant: req.user.id });
-        if (!restaurantProfile) {
-            return res.json({ success: false, message: "Restaurant profile not found" });
-        }
+        if (!restaurantProfile) return res.json({ success: false, message: "Profile not found" });
 
         const foodId = req.body.id;
-
         const food = await foodModel.findById(foodId);
-        if (!food) {
-            return res.json({ success: false, message: "Food item not found" });
-        }
+        if (!food) return res.json({ success: false, message: "Food not found" });
 
         if (food.restaurantId.toString() !== restaurantProfile._id.toString()) {
-            return res.json({ success: false, message: "Authorization Failed: This is not your food." });
+            return res.json({ success: false, message: "Unauthorized action" });
         }
 
         const updateData = {
@@ -109,69 +104,75 @@ const updateFood = async (req, res) => {
         }
 
         await foodModel.findByIdAndUpdate(foodId, updateData);
-        res.json({ success: true, message: "Food item updated" });
+        res.json({ success: true, message: "Food updated" });
 
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message });
+        console.log(error);
+        res.json({ success: false, message: "Error updating food" });
     }
 }
 
-// Lấy món ăn theo ID để cập nhật hoặc hiển thị
+// 5. Lấy món theo ID
 const getFoodById = async (req, res) => {
     try {
-        const food = await foodModel.findById(req.params.id);
-
+        const food = await foodModel.findById(req.params.id).populate('restaurantId', 'name address');
         if (food) {
             res.json({ success: true, data: food });
         } else {
             res.json({ success: false, message: "Food not found" });
         }
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: "Something went wrong" });
+        console.log(error);
+        res.json({ success: false, message: "Error" });
     }
 }
 
-// Tìm kiếm theo nhà hàng
+// 6. Lấy danh sách theo Nhà hàng (Public)
 const listFoodByRestaurant = async (req, res) => {
     try {
         const restaurantId = req.params.restaurantId;
-
         const foods = await foodModel.find({ restaurantId: restaurantId });
         res.json({ success: true, data: foods });
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: "Something went wrong" });
+        console.log(error);
+        res.json({ success: false, message: "Error" });
     }
 }
 
-// Tìm kiếm theo menu (category)
+// 7. Lấy danh sách theo Menu/Category (Public) - CÓ POPULATE
 const listFoodByMenu = async (req, res) => {
     try {
         const menuName = req.params.menuName;
 
-        const foods = await foodModel.find({ category: menuName });
-        res.json({ success: true, data: foods });
+        const foods = await foodModel.find({ category: menuName }).populate('restaurantId', 'name');
+        
+        const formattedFoods = foods.map(food => ({
+            ...food._doc,
+            restaurantName: food.restaurantId ? food.restaurantId.name : "Unknown",
+            restaurantId: food.restaurantId ? food.restaurantId._id : null 
+        }));
+
+        res.json({ success: true, data: formattedFoods });
     } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: "Something went wrong" });
+        console.log(error);
+        res.json({ success: false, message: "Error" });
     }
 }
 
 const listAllFoodPublic = async (req, res) => {
     try {
-        const foods = await foodModel.find({});
-        
-        const foodsWithData = await Promise.all(foods.map(async (food) => {
-                        
-            const profile = await restaurantModel.findById(food.restaurantId);
-            
+
+        const foods = await foodModel.find({}).populate('restaurantId', 'name address'); 
+
+        const foodsWithData = foods.map(food => {
+            const profile = food.restaurantId;
             return {
-                ...food._doc, 
-                restaurantName: profile ? profile.name : "Unknown Restaurant" 
+                ...food._doc,
+                restaurantName: profile ? profile.name : "Unknown Restaurant",
+                restaurantAddress: profile ? profile.address : "",
+                restaurantId: profile ? profile._id : null 
             };
-        }));
+        });
 
         res.json({ success: true, data: foodsWithData });
 

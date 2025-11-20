@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const foodSchema = new mongoose.Schema({
     restaurantId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'restaurant', // Tham chiếu đến restaurantModel
+        ref: 'restaurantProfile', // Tham chiếu đến restaurantModel
         required: true
     },
     // -------------------
