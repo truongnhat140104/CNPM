@@ -7,7 +7,7 @@ import cartRouter from "./routes/cartRoute.js"
 import 'dotenv/config' 
 import orderRouter from "./routes/orderRoute.js"
 import resRouter from "./routes/resRoute.js"
-
+import droneRouter from "./routes/droneRoute.js"
 
 // app config
 const app = express()
@@ -27,6 +27,7 @@ app.use("/api/user",userRouter)
 app.use("/api/cart",cartRouter)
 app.use("/api/order",orderRouter)
 app.use("/api/restaurant", resRouter)
+app.use("/api/drone", droneRouter);
 
 
 app.get("/",(req,res)=> {
