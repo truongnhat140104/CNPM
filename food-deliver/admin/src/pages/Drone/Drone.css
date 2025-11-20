@@ -1,5 +1,5 @@
 .drone-list-view {
-    width: 70%;
+    width: 80%;
     color: #6d6d6d;
     background-color: white; /* Nền trắng */
     padding: 40px;
@@ -198,6 +198,16 @@
     color: #333;
     border: 1px solid #ccc;
     padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-charge {
+    background-color: #1e8e3e;
+    color: white;
+    border: none;
+    padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;

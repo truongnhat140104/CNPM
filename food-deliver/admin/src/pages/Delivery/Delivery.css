@@ -1,0 +1,319 @@
+/* Delivery.css (Phiên bản Tinh gọn và Hợp nhất) */
+
+/* --- 1. CONTAINER CHÍNH & TIÊU ĐỀ --- */
+.delivery-page {
+    /* Khung nổi chính */
+    width: 70%;
+    padding: 40px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: auto;
+}
+
+.delivery-page h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+/* --- 2. TABS NAVIGATION --- */
+.delivery-tabs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #f5f5f5;
+}
+
+.delivery-tabs button {
+    padding: 12px 20px;
+    margin-bottom: -2px;
+    border: none;
+    background: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: 0.3s;
+}
+
+.delivery-tabs button.active {
+    color: tomato;
+    font-weight: 700;
+    border-bottom: 3px solid tomato;
+}
+
+.delivery-tabs button:hover:not(.active) {
+    background-color: #f9f9f9;
+    border-radius: 5px 5px 0 0;
+}
+
+/* --- 3. LIST & GROUPING STYLING --- */
+.delivery-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Khung nhóm Nhà hàng */
+.restaurant-group {
+    background-color: #fcfcfc;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.restaurant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: #f5f5f5;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.restaurant-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.order-count {
+    background-color: #ffeeba;
+    color: #856404;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.group-items {
+    display: grid;
+    gap: 10px;
+    padding: 15px;
+}
+
+
+/* --- 4. DELIVERY CARD (Item Card) --- */
+.delivery-card {
+    display: grid;
+    grid-template-columns: 0.5fr 10fr 1fr auto; 
+    padding: 20px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: white;
+    transition: box-shadow 0.2s;
+    gap: 20px;
+    align-items: center;
+}
+
+.delivery-card:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Nhấn mạnh card con trong Group */
+.delivery-card.small-card {
+    border-left: 4px solid tomato;
+}
+
+.card-icon img {
+    width: 32px;
+    opacity: 0.8;
+}
+
+.card-info {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.card-info h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 4px 0;
+}
+
+.card-info p {
+    margin: 0;
+    color: #666;
+    /* Đã tối ưu hóa hiển thị text dài */
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+}
+
+.card-info strong {
+    color: #444;
+    font-weight: 600;
+}
+
+.price-tag {
+    color: tomato !important;
+    font-weight: 700 !important;
+    margin-top: 4px !important;
+}
+
+
+/* --- 5. ACTION BUTTONS & STATUS BUTTONS --- */
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.btn-dispatch {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: 0.2s;
+    box-shadow: 0 2px 5px rgba(0,123,255,0.2);
+}
+
+.btn-dispatch:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+.delivering-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-track {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.btn-track:hover {
+    background-color: #f0f0f0;
+    border-color: #bbb;
+}
+
+/* Nút chuyển trạng thái */
+.status-btn {
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 13px;
+    line-height: 1.2;
+    min-width: 140px;
+    transition: 0.2s;
+}
+
+.status-btn small {
+    font-weight: 400;
+    opacity: 0.8;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+/* Màu trạng thái */
+.status-btn.moving {
+    background-color: #fff3cd; 
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+.status-btn.moving:hover { background-color: #ffe8a1; }
+
+.status-btn.delivering {
+    background-color: #cce5ff; /* Sửa màu xanh dương nhạt cho delivering */
+    color: #004085;
+    border: 1px solid #b8daff;
+}
+.status-btn.delivering:hover { background-color: #b8daff; }
+
+.status-btn.returning {
+    background-color: #e2e3e5; 
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+.status-btn.returning:hover { background-color: #d6d8db; }
+
+
+/* --- 6. TAGS TRẠNG THÁI (Hiển thị) --- */
+.status-tag {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-tag.completed {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-style: italic;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px dashed #ddd;
+}
+
+.assigned-drone-badge {
+    display: inline-block;
+    background-color: #e3f2fd; /* Màu xanh nhạt */
+    color: #0d47a1;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    margin-bottom: 8px;
+    border: 1px solid #bbdefb;
+}
+
+/* --- 7. RESPONSIVE --- */
+@media (max-width: 900px) {
+    .delivery-page {
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px;
+    }
+    
+    .delivery-card {
+        grid-template-columns: 1fr; /* Xếp chồng lên nhau */
+        gap: 15px;
+    }
+    
+    .card-icon { display: none; } 
+    
+    .card-actions {
+        justify-content: flex-start;
+        border-top: 1px dashed #eee;
+        padding-top: 15px;
+    }
+}

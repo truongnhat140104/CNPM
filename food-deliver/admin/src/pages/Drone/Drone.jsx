@@ -64,6 +64,23 @@ const Drone = ({ url }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleChargeDrone = async (droneId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(`${url}/api/drone/charge`, { droneId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (response.data.success) {
+                toast.success("Drone charged successfully!");
+                fetchDroneList();
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            toast.error("Error charging drone.");
+        }
+    };
+
     // SỬA HÀM SUBMIT: Gửi đúng dữ liệu mới lên Backend
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
@@ -125,6 +142,13 @@ const Drone = ({ url }) => {
                             {/* Nút Edit mở Modal */}
                             <button className='btn-edit' onClick={() => handleEditClick(drone)}>Edit</button>
                             <button className='btn-delete' onClick={() => removeDrone(drone._id)}>Delete</button>
+                            <button 
+                                className='btn-charge' 
+                                onClick={() => handleChargeDrone(drone._id)}
+                                disabled={drone.battery >= 100} // Vô hiệu hóa nếu pin đã đầy
+                            >
+                                Charge
+                            </button>
                         </div>
                     </div>
                 ))}

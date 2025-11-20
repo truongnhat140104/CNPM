@@ -6,6 +6,7 @@ import logo from './logo/logo.jpeg'
 import upload from './icon/upload_area.png'
 import drone from './icon/drone.png'
 import delivery from './icon/delivery.png'
+import parcel_icon from './icon/parcel_icon.png'
 export const currency = '$'
 export const assets ={
     add,
@@ -15,7 +16,8 @@ export const assets ={
     restaurant,
     upload_area: upload,
     drone,
-    delivery
+    delivery,
+    parcel_icon
 }
 
 export const url = 'http://localhost:4000'

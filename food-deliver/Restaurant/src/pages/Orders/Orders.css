@@ -155,21 +155,6 @@
 .btn-ready { background-color: #ffc107; color: #333; }
 .btn-ready:hover { background-color: #e0a800; }
 
-.btn-go { background-color: #0dcaf0; color: #333; }
-
-.drone-waiting {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
-}
-.drone-waiting p {
-    font-size: 12px;
-    color: #777;
-    margin: 0;
-}
-
-
 .status-badge.rejected { 
     background-color: #f8d7da; 
     color: #721c24; 
@@ -185,9 +170,8 @@
 
 .status-badge.ready-for-pickup { background-color: #d1e7dd; color: #155724; }
 .status-badge.out-for-delivery { 
-    /* Màu cho trạng thái ĐANG GIAO (Delivering) */
     background-color: #fce5cd; 
-    color: #cc6600; /* Màu cam đậm */
+    color: #cc6600;
 }
 
 /* ⬅️ THÊM MÀU CHO TRẠNG THÁI ĐÃ GIAO (Delivered) */
@@ -204,24 +188,30 @@
 .delivered-text {
     font-size: 14px;
     font-weight: 700;
-    color: #004085; /* Màu xanh lá (Thành công) */
+    color: #004085; 
     width: 100%;
     text-align: right;
     padding: 10px;
-    margin: 0; /* Đảm bảo không có margin thừa */
+    margin: 0; 
 }
 
-/* Style cho wrapper của text Đang giao (Delivering) */
 .delivering-text {
     display: flex;
-    justify-content: flex-end; /* Đẩy nội dung sang phải */
+    justify-content: flex-end;
     align-items: center;
     width: 100%;
 }
 
-/* Tùy chỉnh màu cho text ĐANG GIAO */
+.drone-waiting-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f5132; 
+    text-align: center;
+    margin: 0;
+}
+
 .delivering-text .delivered-text {
-    color: #721c24; /* Màu xanh nước biển nhạt (Đang tiến hành) */
+    color: #721c24;
 }
 
 @media (max-width: 768px) {

@@ -1,6 +1,7 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import foodModel from "../models/foodModel.js";
+import droneModel from "../models/droneModel.js";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -135,14 +136,39 @@ const userOrders = async (req, res) => {
     }
 }
 
-// Hàm listOrders
-const listOrders = async (req,res) => {
+// Hàm listOrders lấy danh sách đơn hàng (dùng cho Admin/Restaurant) và có thêm thông tin Drone
+const listOrders = async (req, res) => {
     try {
         const orders = await orderModel.find({});
-        res.json({success:true,data:orders})
+
+        const ordersWithData = await Promise.all(orders.map(async (order) => {
+            
+            let assignedDroneInfo = null;
+
+                // Chỉ tìm Drone nếu đơn hàng đang ở trạng thái "Giao đi"
+            if (['Drone Moving', 'Out for delivery', 'Returning'].includes(order.status)) {
+                // Tìm con Drone nào đang giữ currentOrderId trùng với order._id
+                const drone = await droneModel.findOne({ currentOrderId: order._id });
+                
+                if (drone) {
+                    assignedDroneInfo = {
+                        serialNumber: drone.serialNumber,
+                        battery: drone.battery
+                    };
+                }
+            }
+
+            return {
+                ...order._doc, 
+                assignedDrone: assignedDroneInfo // Gửi kèm thông tin Drone về Frontend
+            };
+        }));
+
+        res.json({ success: true, data: ordersWithData });
+
     } catch (error) {
         console.log(error);
-        res.json({success:false,message:"Error listing orders"})
+        res.json({ success: false, message: "Error listing orders" });
     }
 }
 
