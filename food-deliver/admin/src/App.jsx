@@ -2,8 +2,13 @@ import React, { useEffect } from 'react'
 import Navbar from './components/Navbar/Navbar'
 import Sidebar from './components/Sidebar/Sidebar'
 import { Routes, Route, useNavigate  } from 'react-router-dom'
+
+
 import User from './pages/User/User'
 import AddingRes from './pages/AddingRes/AddingRes'
+import Drone from './pages/Drone/Drone'
+import Delivery from './pages/Delivery/Delivery'
+
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
@@ -46,11 +51,11 @@ const App = () => {
               <Route path="/" element={<TokenHandler />} />
               <Route path="/user" element={<User url={url}/>} />
               <Route path="/addingres" element={<AddingRes url={url}/>} />
+              <Route path="/drone" element={<Drone url={url}/>} />
+              <Route path="/delivery" element={<Delivery url={url}/>} />
             </Routes>
           </div>
-
-        </div>
-        
+        </div>    
       </div>
     </div>
   )

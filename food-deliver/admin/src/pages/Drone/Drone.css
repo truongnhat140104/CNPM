@@ -1,0 +1,169 @@
+/* Drone.css */
+
+.tabs-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0;
+}
+
+.tab-btn {
+    padding: 10px 15px;
+    margin-bottom: -2px; 
+    border: none;
+    background: none;
+    font-size: 16px;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 3px solid transparent; 
+    transition: 0.3s;
+}
+
+.tab-btn.active {
+    color: tomato;
+    font-weight: 600;
+    border-bottom: 3px solid tomato; 
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+/* --- 2. CARD/VIEW STYLING (Cho cả form và list) --- */
+.add-drone-form, .drone-list-view {
+    width: 70%;
+    padding: 40px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.add-drone-form h2, .drone-list-view h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+/* --- 3. LIST TABLE STYLING --- */
+.drone-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.drone-table-header, .drone-table-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr; /* Serial, Location, Status, Actions */
+    padding: 15px 10px;
+    align-items: center;
+    gap: 10px;
+}
+
+.drone-table-header {
+    background-color: #f8f8f8;
+    font-weight: 600;
+    color: #333;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.drone-table-row {
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: #555;
+}
+
+.drone-table-row span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* --- 4. MAP/FORM STYLING (Điều chỉnh form cũ) --- */
+.map-container {
+    height: 400px;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.map-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.search-box {
+    display: flex;
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.search-box input {
+    border: none;
+    padding: 10px;
+    flex-grow: 1;
+}
+.btn-search {
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    padding: 0 10px;
+}
+.btn-default {
+    border: 1px solid #ccc;
+    background-color: #fcfcfc;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+.coords-display {
+    font-size: 14px;
+    color: #777;
+    margin-top: 10px;
+}
+.coords-display span {
+    margin-right: 15px;
+}
+
+/* Input chung */
+.add-input-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-input-group p {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.add-btn {
+    background-color: tomato;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 20px;
+}
