@@ -58,7 +58,7 @@ const Orders = () => {
     } else if (activeTab === 'kitchen') {
       return orders.filter(order => ['Cooking', 'Ready for Pickup'].includes(order.status))
     } else if (activeTab === 'delivering') {
-      return orders.filter(order => order.status === 'Delivering')
+      return orders.filter(order => ['Delivering', 'Out for delivery'].includes(order.status))
     } else if (activeTab === 'delivered') {
       return orders.filter(order => order.status === 'Delivered')
     } else if (activeTab === 'rejected') {
@@ -71,7 +71,7 @@ const Orders = () => {
 
   const requestCount = orders.filter(o => o.status === 'Food Processing').length
   const kitchenCount = orders.filter(o => ['Cooking', 'Ready for Pickup'].includes(o.status)).length
-  const deliveringCount = orders.filter(o => o.status === 'Delivering').length
+  const deliveringCount = orders.filter(o => ['Delivering', 'Out for delivery'].includes(o.status)).length
   const deliveredCount = orders.filter(o => o.status === 'Delivered').length
   const rejectedCount = orders.filter(o => o.status === 'Rejected').length
 
@@ -169,9 +169,7 @@ const Orders = () => {
 
                   {order.status === 'Ready for Pickup' && (
                     <div className='drone-waiting'>
-                      <button className='btn-go' onClick={() => updateStatus(order._id, 'Delivering')}>
-                        Drone Loaded (Go!)
-                      </button>
+                      <p className='drone-waiting-text'> Drone waiting </p>
                     </div>
                   )}
                 </div>

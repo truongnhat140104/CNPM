@@ -1,0 +1,104 @@
+/* NewDrone.css */
+
+/* --- 1. CARD WRAPPER & HEADING --- */
+.add-drone-form {
+    width: 70%;
+    padding: 40px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.add-drone-form h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+/* Form Container */
+.add-drone-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* --- 2. FORM INPUTS & GROUPS --- */
+.add-input-group {
+    margin-bottom: 5px; /* Giảm margin bottom để form gọn hơn */
+}
+.add-input-group p {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #555;
+}
+.add-input-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --- 3. MAP AND SEARCH CONTROLS --- */
+.map-container {
+    height: 400px; /* Chiều cao cố định cho bản đồ */
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.map-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.search-box {
+    display: flex;
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.search-box input {
+    border: none;
+    padding: 10px;
+    flex-grow: 1;
+}
+.btn-search {
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    padding: 0 10px;
+}
+.btn-default {
+    border: 1px solid #ccc;
+    background-color: #fcfcfc;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.coords-display {
+    font-size: 14px;
+    color: #777;
+    margin-top: 10px;
+}
+.coords-display span {
+    margin-right: 15px;
+}
+
+
+/* --- 4. BUTTON --- */
+.add-btn {
+    background-color: tomato;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 20px;
+}
