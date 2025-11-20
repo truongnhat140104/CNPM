@@ -15,6 +15,10 @@ const Sidebar = () => {
                 <img src={assets.add} alt="" className='icon_size'/>
                 <p>Restaurant</p>
             </NavLink>
+            <NavLink to='/newdrone' className="sidebar-option">
+                <img src={assets.add} alt="" className='icon_size'/>
+                <p>New Drone</p>
+            </NavLink>
             <NavLink to='/drone' className="sidebar-option">
                 <img src={assets.drone} alt="" className='icon_size'/>
                 <p>Drone Manager</p>

@@ -8,6 +8,7 @@ import User from './pages/User/User'
 import AddingRes from './pages/AddingRes/AddingRes'
 import Drone from './pages/Drone/Drone'
 import Delivery from './pages/Delivery/Delivery'
+import NewDrone from './pages/NewDrone/NewDrone'
 
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -53,6 +54,7 @@ const App = () => {
               <Route path="/addingres" element={<AddingRes url={url}/>} />
               <Route path="/drone" element={<Drone url={url}/>} />
               <Route path="/delivery" element={<Delivery url={url}/>} />
+              <Route path="/newdrone" element={<NewDrone url={url}/>} />
             </Routes>
           </div>
         </div>    

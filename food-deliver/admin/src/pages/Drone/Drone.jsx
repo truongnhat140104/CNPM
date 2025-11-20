@@ -1,250 +1,190 @@
 import React, { useState, useEffect } from 'react';
-import './Drone.css';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-
-// --- CẤU HÌNH ICON LEAFLET ---
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-let DefaultIcon = L.icon({
-    iconUrl: icon, shadowUrl: iconShadow,
-    iconSize: [25, 41], iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// --- CONST: VỊ TRÍ MẶC ĐỊNH ---
-const DEFAULT_BASE_STATION = { lat: 10.762622, lng: 106.660172 };
-
-function MapUpdater({ center }) {
-    const map = useMap();
-    map.flyTo(center, map.getZoom());
-    return null;
-}
-
-function LocationMarker({ position, setLocation }) {
-    useMapEvents({
-        click(e) {
-            setLocation(e.latlng);
-        },
-    });
-    return position === null ? null : <Marker position={position}></Marker>;
-}
+import './Drone.css';
 
 const Drone = ({ url }) => {
-    // STATE QUẢN LÝ TABS VÀ LIST
-    const [activeTab, setActiveTab] = useState('create');
     const [droneList, setDroneList] = useState([]); 
+
+    const [showModal, setShowModal] = useState(false);
+    const [editingDrone, setEditingDrone] = useState(null);
     
-    // STATE QUẢN LÝ FORM
-    const [serialNumber, setSerialNumber] = useState("");
-    const [location, setLocation] = useState(DEFAULT_BASE_STATION);
-    const [searchQuery, setSearchQuery] = useState("");
-    
-    // --- HÀM LẤY DANH SÁCH DRONE ---
+    const [formData, setFormData] = useState({
+        serialNumber: '',
+        lat: '',
+        lng: ''
+    });
+
+    // 1. Lấy danh sách
     const fetchDroneList = async () => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get(`${url}/api/drone/list`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
             if (response.data.success) {
                 setDroneList(response.data.data);
-            } else {
-                toast.error(response.data.message || "Failed to fetch drone list.");
             }
         } catch (error) {
             toast.error("Error fetching drone list.");
         }
     };
     
-    // --- HÀM XỬ LÝ TÌM KIẾM ĐỊA CHỈ (Dùng OpenStreetMap) ---
-    const handleSearch = async () => {
-        if (!searchQuery) return;
-        try {
-            const res = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`);
-            
-            if (res.data && res.data.length > 0) {
-                const { lat, lon } = res.data[0];
-                const newLoc = { lat: parseFloat(lat), lng: parseFloat(lon) };
-                setLocation(newLoc);
-                toast.success("Found location!");
-            } else {
-                toast.error("Location not found!");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Error searching location");
-        }
-    };
-
-    // --- HÀM RESET VỀ DEFAULT ---
-    const handleSetDefault = (e) => {
-        e.preventDefault();
-        setLocation(DEFAULT_BASE_STATION);
-        toast.info("Reset to Default Base Station");
-    };
-
-    // --- HÀM XỬ LÝ SUBMIT FORM ---
-    const onSubmitHandler = async (event) => {
-        event.preventDefault();
-        const droneData = {
-            serialNumber: serialNumber,
-            location: location,
-            baseStation: location
-        };
-
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post(`${url}/api/drone/add`, droneData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (response.data.success) {
-                setSerialNumber("");
-                toast.success("Drone added successfully!");
-                fetchDroneList(); 
-                setActiveTab('list');
-            } else {
-                toast.error(response.data.message);
-            }
-        } catch (error) {
-            toast.error("Error adding drone");
-        }
-    }
-    
-    // --- HÀM XÓA DRONE ---
+    // 2. Xóa Drone
     const removeDrone = async (droneId) => {
-         // Giả định endpoint xóa là /api/drone/remove
-         try {
+        if (!window.confirm("Are you sure you want to delete this drone?")) return;
+        try {
             const token = localStorage.getItem('token');
             const response = await axios.post(`${url}/api/drone/remove`, { id: droneId }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (response.data.success) {
                 toast.success("Drone deleted.");
-                fetchDroneList(); // Tải lại danh sách
+                fetchDroneList();
             } else {
-                toast.error(response.data.message || "Failed to delete drone.");
+                toast.error("Failed to delete.");
             }
         } catch (error) {
             toast.error("Error deleting drone.");
         }
     }
 
-    // --- EFFECT: Tải danh sách khi chuyển sang tab 'list' ---
-    useEffect(() => {
-        if (activeTab === 'list') {
-            fetchDroneList();
-        }
-    }, [activeTab]);
+    const handleEditClick = (drone) => {
+        setEditingDrone(drone);
+        setFormData({
+            serialNumber: drone.serialNumber,
+            lat: drone.location.lat,
+            lng: drone.location.lng
+        });
+        setShowModal(true);
+    };
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    // SỬA HÀM SUBMIT: Gửi đúng dữ liệu mới lên Backend
+    const handleUpdateSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(`${url}/api/drone/update`, {
+                droneId: editingDrone._id,
+                serialNumber: formData.serialNumber, // Gửi tên mới
+                lat: formData.lat,                   // Gửi vĩ độ mới
+                lng: formData.lng                    // Gửi kinh độ mới
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (response.data.success) {
+                toast.success("Drone updated successfully!");
+                setShowModal(false);
+                fetchDroneList();
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            toast.error("Error updating drone.");
+        }
+    };
+
+    useEffect(() => {
+        fetchDroneList();
+    }, []);
 
     return (
-        <div className='drone-manager'>
+        <div className='drone-list-view'>
+            <h2>Registered Drones ({droneList.length})</h2>
             
-            {/* --- THANH TAB --- */}
-            <div className="tabs-container">
-                <button 
-                    className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`} 
-                    onClick={() => setActiveTab('list')}
-                >
-                    List Drone ({droneList.length})
-                </button>
-                <button 
-                    className={`tab-btn ${activeTab === 'create' ? 'active' : ''}`} 
-                    onClick={() => setActiveTab('create')}
-                >
-                    Register New Drone
-                </button>
-            </div>
-            
-            <div className="tab-content">
-                
-                {/* A. VIEW TẠO MỚI */}
-                {activeTab === 'create' && (
-                    <div className='add-drone-form'>
-                        <form className='flex-col' onSubmit={onSubmitHandler}>
-                            <h2>Register New Drone</h2>
-                            
-                            {/* Serial Number Input */}
-                            <div className="add-input-group">
-                                <p>Drone Serial Number</p>
-                                <input onChange={(e) => setSerialNumber(e.target.value)} value={serialNumber} type="text" placeholder='E.g., D-001' required />
-                            </div>
+            <div className='drone-table'>
+                <div className='drone-table-header'>
+                    <b>Serial Number</b>
+                    <b>Location</b>
+                    <b>Battery</b>
+                    <b>Status</b>
+                    <b>Actions</b>
+                </div>
+                {droneList.map((drone) => (
+                    <div key={drone._id} className='drone-table-row'>
+                        <span>{drone.serialNumber}</span>
+                        <span>{drone.location.lat.toFixed(4)}, {drone.location.lng.toFixed(4)}</span>
+                        
+                        {/* Hiển thị Pin có màu sắc */}
+                        <span style={{color: drone.battery < 20 ? 'red' : 'green', fontWeight: 'bold'}}>
+                            {drone.battery}%
+                        </span>
 
-                            <div className="add-input-group">
-                                <p>Base Station Location</p>
-
-                                {/* THANH CÔNG CỤ TÌM KIẾM & NÚT DEFAULT */}
-                                <div className="map-controls">
-                                    <div className="search-box">
-                                        <input 
-                                            type="text" 
-                                            placeholder="Type address (e.g. Ben Thanh Market)" 
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleSearch())}
-                                        />
-                                        <button type="button" onClick={handleSearch} className="btn-search">🔍</button>
-                                    </div>
-                                    
-                                    <button type="button" onClick={handleSetDefault} className="btn-default">
-                                        Reset to Default
-                                    </button>
-                                </div>
-
-                                {/* BẢN ĐỒ */}
-                                <div className="map-container">
-                                    <MapContainer center={DEFAULT_BASE_STATION} zoom={13} scrollWheelZoom={false} style={{ height: "100%", width: "100%" }}>
-                                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                        <MapUpdater center={location} />
-                                        <LocationMarker position={location} setLocation={setLocation} />
-                                    </MapContainer>
-                                </div>
-                                
-                                <div className="coords-display">
-                                    <span>Lat: {location.lat.toFixed(6)}</span>
-                                    <span>Lng: {location.lng.toFixed(6)}</span>
-                                </div>
-                            </div>
-
-                            <button type='submit' className='add-btn'>ADD DRONE</button>
-                        </form>
-                    </div>
-                )}
-                
-                {/* B. VIEW DANH SÁCH */}
-                {activeTab === 'list' && (
-                    <div className='drone-list-view'>
-                        <h2>Registered Drones ({droneList.length})</h2>
-                        <div className='drone-table'>
-                            {/* Header */}
-                            <div className='drone-table-header'>
-                                <b>Serial Number</b>
-                                <b>Location (Lat/Lng)</b>
-                                <b>Status</b>
-                                <b>Actions</b>
-                            </div>
-                            {/* Rows */}
-                            {droneList.map((drone) => (
-                                <div key={drone._id} className='drone-table-row'>
-                                    <span>{drone.serialNumber}</span>
-                                    <span>{drone.location.lat.toFixed(6)}, {drone.location.lng.toFixed(6)}</span>
-                                    <span>{drone.status || 'Active'}</span>
-                                    <button className='btn-delete' onClick={() => removeDrone(drone._id)}>Delete</button>
-                                </div>
-                            ))}
-                            {droneList.length === 0 && <p style={{textAlign:'center', padding: '20px'}}>No drones registered yet.</p>}
+                        {/* Hiển thị Trạng thái có màu sắc */}
+                        <span className={`status-tag ${drone.status}`}>
+                            {drone.status}
+                        </span>
+                        
+                        <div className="action-buttons">
+                            {/* Nút Edit mở Modal */}
+                            <button className='btn-edit' onClick={() => handleEditClick(drone)}>Edit</button>
+                            <button className='btn-delete' onClick={() => removeDrone(drone._id)}>Delete</button>
                         </div>
                     </div>
-                )}
+                ))}
+                {droneList.length === 0 && <p className="no-data">No drones registered yet.</p>}
             </div>
+
+            {/* --- MODAL UPDATE --- */}
+            {showModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Edit Drone Info</h3>
+                        <form onSubmit={handleUpdateSubmit}>
+                            
+                            {/* 1. Sửa Tên Drone */}
+                            <div className="form-group">
+                                <label>Serial Number (Name):</label>
+                                <input 
+                                    type="text" 
+                                    name="serialNumber" 
+                                    value={formData.serialNumber} 
+                                    onChange={handleInputChange} 
+                                    required
+                                />
+                            </div>
+
+                            {/* 2. Sửa Tọa độ (Thủ công) */}
+                            <div className="form-group">
+                                <label>Latitude (Vĩ độ):</label>
+                                <input 
+                                    type="number" 
+                                    step="any" // Cho phép số thập phân
+                                    name="lat" 
+                                    value={formData.lat} 
+                                    onChange={handleInputChange}
+                                    required 
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Longitude (Kinh độ):</label>
+                                <input 
+                                    type="number" 
+                                    step="any"
+                                    name="lng" 
+                                    value={formData.lng} 
+                                    onChange={handleInputChange}
+                                    required 
+                                />
+                            </div>
+
+                            <div className="modal-actions">
+                                <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
+                                <button type="submit" className="btn-save">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
-export default Drone
+export default Drone;

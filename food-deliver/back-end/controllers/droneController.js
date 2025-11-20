@@ -72,17 +72,30 @@ const getDrones = async (req, res) => {
     }
 }
 
-// 3. Cập nhật trạng thái/Pin (Update) - Dùng cho nút "Sạc pin" hoặc "Bảo trì"
 const updateDroneStatus = async (req, res) => {
     try {
-        const { droneId, status, battery } = req.body;
+        // Nhận thêm serialNumber, lat, lng từ Frontend
+        const { droneId, serialNumber, lat, lng } = req.body;
         
         const updateData = {};
-        if (status) updateData.status = status;
-        if (battery) updateData.battery = battery;
+
+        // Chỉ cập nhật nếu có dữ liệu gửi lên
+        if (serialNumber) updateData.serialNumber = serialNumber;
+        
+        if (lat !== undefined && lng !== undefined) {
+            updateData.location = {
+                lat: parseFloat(lat),
+                lng: parseFloat(lng)
+            };
+            // Cập nhật luôn baseStation nếu muốn drone đổi nhà
+            updateData.baseStation = {
+                lat: parseFloat(lat),
+                lng: parseFloat(lng)
+            };
+        }
 
         await droneModel.findByIdAndUpdate(droneId, updateData);
-        res.json({ success: true, message: "Drone status updated" });
+        res.json({ success: true, message: "Drone info updated successfully" });
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: "Error updating drone" });
