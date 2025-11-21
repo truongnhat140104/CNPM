@@ -52,7 +52,7 @@ const Orders = () => {
     if (activeTab === 'requests') {
       return orders.filter(order => order.status === 'Food Processing' || order.status === 'Pending')
     } else if (activeTab === 'kitchen') {
-      return orders.filter(order => ['Cooking', 'Ready for Pickup'].includes(order.status))
+      return orders.filter(order => ['Cooking', 'Ready for Pickup', 'Drone Moving'].includes(order.status))
     } else if (activeTab === 'delivering') {
       return orders.filter(order => ['Delivering', 'Out for delivery'].includes(order.status))
     } else if (activeTab === 'delivered') {
@@ -66,7 +66,7 @@ const Orders = () => {
   const filteredOrders = getFilteredOrders()
 
   const requestCount = orders.filter(o => o.status === 'Food Processing').length
-  const kitchenCount = orders.filter(o => ['Cooking', 'Ready for Pickup'].includes(o.status)).length
+  const kitchenCount = orders.filter(o => ['Cooking', 'Ready for Pickup', 'Drone Moving'].includes(o.status)).length
   const deliveringCount = orders.filter(o => ['Delivering', 'Out for delivery'].includes(o.status)).length
   const deliveredCount = orders.filter(o => o.status === 'Delivered').length
   const rejectedCount = orders.filter(o => o.status === 'Rejected').length
@@ -164,8 +164,8 @@ const Orders = () => {
                   )}
 
                   {order.status === 'Ready for Pickup' && (
-                    <div className='drone-waiting'>
-                      <p className='drone-waiting-text'> Drone waiting </p>
+                    <div className='drone-moving'>
+                      <button className='drone-moving-text'> Drone Moving </button>
                     </div>
                   )}
                 </div>
