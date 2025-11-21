@@ -176,7 +176,7 @@ const Drone = ({ url }) => {
 
                             {/* 2. Sửa Tọa độ (Thủ công) */}
                             <div className="form-group">
-                                <label>Latitude (Vĩ độ):</label>
+                                <label>abc (Vĩ độ):</label>
                                 <input 
                                     type="number" 
                                     step="any" // Cho phép số thập phân
